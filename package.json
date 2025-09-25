@@ -14,11 +14,10 @@
   "dependencies": {
     "@fastify/cors": "11.1.0",
     "@prisma/client": "6.16.2",
-    "bcryptjs": "^3.0.2",
+    "bcryptjs": "3.0.2",
     "dotenv": "17.2.2",
     "fastify": "5.6.0",
     "http-errors": "2.0.0",
-    "novelnest-backend": ".",
     "zod": "4.1.11"
   }
 }

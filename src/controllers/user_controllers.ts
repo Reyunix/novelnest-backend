@@ -33,6 +33,7 @@ export const validateLoginCredentials = async (userData: LoginForm) => {
   const identifier = userEmail || userName;
 
   if (!identifier) {
+
     throw new AppError("INVALID_LOGIN_DATA", "Usuario o Correo obligatorios");
   }
 
@@ -40,6 +41,5 @@ export const validateLoginCredentials = async (userData: LoginForm) => {
   if (!user) {
     throw new AppError("INVALID_CREDENTIALS");
   }
-
-  return await comparePasswords(user.password, userPassword);
+  return await comparePasswords(userPassword, user.password);
 };

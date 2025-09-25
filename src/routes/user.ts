@@ -1,5 +1,8 @@
 import { FastifyInstance } from "fastify";
-import { createUser, validateLoginCredentials } from "@/controllers/user_controllers";
+import {
+  createUser,
+  validateLoginCredentials,
+} from "@/controllers/user_controllers";
 import { sendSuceess } from "@/utils/http/successResponses";
 import cors from "@fastify/cors";
 import {
@@ -16,9 +19,8 @@ export const userRoutes = async (app: FastifyInstance) => {
   });
 
   app.post("/register", {}, async (request, reply) => {
-
     try {
-      const registerData = validateRegisterForm(request.body)
+      const registerData = validateRegisterForm(request.body);
       await createUser(registerData);
       return sendSuceess(reply, "USER_CREATED");
     } catch (error) {
@@ -36,13 +38,16 @@ export const userRoutes = async (app: FastifyInstance) => {
   app.post("/login", {}, async (request, reply) => {
     try {
       const loginData = validateLoginForm(request.body);
-      const validateUser = await validateLoginCredentials(loginData)
-
-    } catch (error){
-      if (error instanceof AppError){
-        return sendError(reply, error)
+      const validUser = await validateLoginCredentials(loginData);
+      if (validUser) {
+        return sendSuceess(reply, "LOGIN_SUCCESS");
+      } else {
+        throw new AppError("INVALID_CREDENTIALS");
       }
-
+    } catch (error) {
+      if (error instanceof AppError) {
+        return sendError(reply, error);
+      }
     }
   });
 };

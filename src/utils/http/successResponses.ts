@@ -26,6 +26,11 @@ export const SuccessCatalog = {
     message: "Correo actualizado correctamente",
     code: "EMAIL_UPDATED",
   },
+  LOGIN_SUCCESS: {
+    statusCode: 200,
+    message: "Inicio de sesión exitoso",
+    code: "LOGIN_SUCCESS",
+  },
 } as const;
 
 export type SuccessKey = keyof typeof SuccessCatalog;
