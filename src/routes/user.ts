@@ -1,36 +1,30 @@
 import { FastifyInstance } from "fastify";
-import { RegisterFormSchema } from "@/schemas/registerFormSchema";
-import { createUser } from "@/controllers/user_controllers";
+import { createUser, validateLoginCredentials } from "@/controllers/user_controllers";
 import { sendSuceess } from "@/utils/http/successResponses";
-import type { ErrorCode } from "@/utils/http/errorResponses";
-import z from "zod";
-
 import cors from "@fastify/cors";
-import { AppError, sendError } from "@/utils/http/errorResponses";
-import { LoginFormSchema } from "@/schemas/loginFormSchema";
+import {
+  AppError,
+  sendError,
+  validateLoginForm,
+  validateRegisterForm,
+} from "@/utils/http/errorResponses";
 
 export const userRoutes = async (app: FastifyInstance) => {
   app.register(cors, {
     origin: "*",
     methods: ["POST"],
   });
-  app.post("/register", {}, async (request, reply) => {
-    console.log("**endpoint --->> /register");
-    const result = RegisterFormSchema.safeParse(request.body);
 
-    if (!result.success) {
-      return reply.status(400).send({
-        message: "Invalid request body",
-        error: result.error?.message,
-      });
-    }
+  app.post("/register", {}, async (request, reply) => {
+
     try {
-      await createUser(result.data);
+      const registerData = validateRegisterForm(request.body)
+      await createUser(registerData);
       return sendSuceess(reply, "USER_CREATED");
     } catch (error) {
       if (error instanceof AppError) {
         console.log("APP ERROR**");
-        return sendError(reply, error.errorCode as ErrorCode);
+        return sendError(reply, error);
       } else {
         console.log("**Internal Error**");
         console.log(error);
@@ -40,19 +34,15 @@ export const userRoutes = async (app: FastifyInstance) => {
   });
 
   app.post("/login", {}, async (request, reply) => {
-    const result = LoginFormSchema.safeParse(request.body);
-    if (!result.success) {
-      const formattedErrors = z.treeifyError(result.error);
-      const messageError =
-        formattedErrors.properties?.userName?.errors[0] ||
-        formattedErrors.properties?.userEmail?.errors[0] ||
-        formattedErrors.properties?.userPassword?.errors[0] ||
-        "Datos Inválidos";
-      return reply.status(400).send({
-        success: false,
-        error: "INVALID_FORM_DATA",
-        message: messageError,
-      });
+    try {
+      const loginData = validateLoginForm(request.body);
+      const validateUser = await validateLoginCredentials(loginData)
+
+    } catch (error){
+      if (error instanceof AppError){
+        return sendError(reply, error)
+      }
+
     }
   });
 };

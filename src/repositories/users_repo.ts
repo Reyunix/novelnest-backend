@@ -8,22 +8,27 @@ export const checkIfUserExists = async ({
 }: RegisterForm) => {
   const user = await db.user.findFirst({
     where: {
-      OR: [
-        {name:userName},
-        {email:userEmail}
-      ]
+      OR: [{ name: userName }, { email: userEmail }],
     },
   });
 
-  const userExists = user?.name === userName
-  const emailExists = user?.email === userEmail
+  const userExists = user?.name === userName;
+  const emailExists = user?.email === userEmail;
 
+  return { userExists, emailExists };
+};
 
-  return {userExists, emailExists};
+export const checkIfLoginUserExists = async (identifier: string) => {
+  const user = await db.user.findFirst({
+    where: {
+      OR: [{ name: identifier }, { email: identifier }],
+    },
+  });
+  return user;
 };
 
 export const createUserInDB = async (userData: RegisterForm) => {
-  const hashedPassword = await hashPassword(userData.userPassword)
+  const hashedPassword = await hashPassword(userData.userPassword);
   const newUser = await db.user.create({
     data: {
       name: userData.userName,
