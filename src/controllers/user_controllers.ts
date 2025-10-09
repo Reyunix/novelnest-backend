@@ -41,5 +41,12 @@ export const validateLoginCredentials = async (userData: LoginForm) => {
   if (!user) {
     throw new AppError("INVALID_CREDENTIALS");
   }
-  return await comparePasswords(userPassword, user.password);
+
+  const passwordIsValid = await comparePasswords(userPassword, user.password)
+  if (!passwordIsValid){
+    throw new AppError("INVALID_CREDENTIALS")
+  }
+
+  const {password: _, ...safeUser} = user
+  return safeUser;
 };

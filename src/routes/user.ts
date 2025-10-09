@@ -1,8 +1,5 @@
 import { FastifyInstance } from "fastify";
-import {
-  createUser,
-  validateLoginCredentials,
-} from "@/controllers/user_controllers";
+import {  createUser,  validateLoginCredentials,} from "@/controllers/user_controllers";
 import { sendSuceess } from "@/utils/http/successResponses";
 import cors from "@fastify/cors";
 import {
@@ -14,9 +11,12 @@ import {
 
 export const userRoutes = async (app: FastifyInstance) => {
   app.register(cors, {
-    origin: "*",
+    origin: "https://localhost:5173",
     methods: ["POST"],
+    credentials: true
   });
+
+
 
   app.post("/register", {}, async (request, reply) => {
     try {
@@ -36,10 +36,27 @@ export const userRoutes = async (app: FastifyInstance) => {
   });
 
   app.post("/login", {}, async (request, reply) => {
+    console.log("Login endpoint")
     try {
       const loginData = validateLoginForm(request.body);
       const validUser = await validateLoginCredentials(loginData);
       if (validUser) {
+        const token = app.jwt.sign(
+          { userId: validUser.id,
+            userName: validUser.name,
+            userEmail: validUser.email
+          },
+          { expiresIn: "1h" }
+        )
+
+        reply.setCookie("access_token", token, {
+          httpOnly: true,
+          secure: true,  // CAMBIAR A TRUE EN PRODUCCIÓN
+          sameSite:"none",
+          path: "/",
+          maxAge: 60 * 15,
+        })
+
         return sendSuceess(reply, "LOGIN_SUCCESS");
       } else {
         throw new AppError("INVALID_CREDENTIALS");
