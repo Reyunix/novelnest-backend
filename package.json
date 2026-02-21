@@ -5,10 +5,15 @@
   "private": true,
   "scripts": {
     "start": "bun src/index.ts",
-    "dev": "bun --watch --no-clear-screen src/index.ts"
+    "dev": "bun --watch --no-clear-screen src/index.ts",
+    "docker": "cd docker && docker compose up -d && cd ..",
+    "studio": "bunx prisma studio --schema src/database/prisma/schema.prisma",
+    "up": "bun run docker && concurrently --names \"PRISMA, API\" --prefix-colors \"cyan,magenta\" --prefix \"[{time}] [{name}]\" \"bun run studio\" \"bun dev\" "
   },
   "devDependencies": {
     "@types/bun": "1.2.23",
+    "concurrently": "9.2.1",
+    "prisma": "6.16.3",
     "typescript": "5.9.3"
   },
   "dependencies": {
@@ -16,6 +21,7 @@
     "@fastify/cors": "11.1.0",
     "@fastify/jwt": "10.0.0",
     "@prisma/client": "6.16.3",
+    "@types/node": "^24.9.1",
     "bcryptjs": "3.0.2",
     "dotenv": "17.2.3",
     "fastify": "5.6.1",

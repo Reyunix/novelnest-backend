@@ -1,9 +1,7 @@
 import { FastifyInstance } from "fastify";
-import { checkDbConnection } from "@/repositories/test";
-import { createUserInDB } from "@/repositories/users_repo";
 
 export const rootRoutes = (app: FastifyInstance) => {
-  app.get("/", async (request, reply) => {
+  app.get("/", async () => {
     return { message: "Hello from Fastify backend!" };
   });
 };

@@ -1,41 +1,9 @@
 import { FastifyReply } from "fastify";
-
-export const SuccessCatalog = {
-  USER_CREATED: {
-    statusCode: 201,
-    message: "Usuario creado correctamente",
-    code: "USER_CREATED",
-  },
-  USER_DELETED: {
-    statusCode: 200,
-    message: "Usuario eliminado correctamente",
-    code: "USER_DELETED",
-  },
-  PASSWORD_UPDATED: {
-    statusCode: 200,
-    message: "Contraseña actualizada correctamente",
-    code: "PASSWORD_UPDATED",
-  },
-  USERNAME_UPDATED: {
-    statusCode: 200,
-    message: "Nombre de usuario actualizado correctamente",
-    code: "USERNAME_UPDATED",
-  },
-  EMAIL_UPDATED: {
-    statusCode: 200,
-    message: "Correo actualizado correctamente",
-    code: "EMAIL_UPDATED",
-  },
-  LOGIN_SUCCESS: {
-    statusCode: 200,
-    message: "Inicio de sesión exitoso",
-    code: "LOGIN_SUCCESS",
-  },
-} as const;
+import { SuccessCatalog } from "./responsesCatalogs";
 
 export type SuccessKey = keyof typeof SuccessCatalog;
 
-export const sendSuceess = (
+export const sendSuccess = (
   reply: FastifyReply,
   key: SuccessKey,
   data?: unknown

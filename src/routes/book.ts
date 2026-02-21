@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
 import { FormatUrl } from "@/utils/FormatUrl";
-import type { ApiResponse } from "@/schemas/apiResonpeSchema";
+import type { ApiResponse } from "@/schemas/bookApiSchema";
 
 export const bookRoutes = async (app: FastifyInstance) => {
   app.get("/", async (request, reply) => {
