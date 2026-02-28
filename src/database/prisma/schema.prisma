@@ -15,12 +15,42 @@ enum Role {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  email     String   @unique
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
+  email     String     @unique
   address   String?
   password  String
-  role      Role  @default(user)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  role      Role       @default(user)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  books     UserBook[]
 }
+
+enum BookStatus {
+  reading
+  completed
+  want_to_read
+  abandoned
+}
+
+model UserBook {
+  id           Int        @id @default(autoincrement())
+  userId       Int
+  googleBookId String
+  title        String
+  authors      String[]
+  thumbnail    String?
+  canonicalVolumeLink String?
+  review       String?
+  rating       Int?
+  status       BookStatus @default(want_to_read)
+  startedAt    DateTime?
+  finishedAt   DateTime?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, googleBookId])
+}
+

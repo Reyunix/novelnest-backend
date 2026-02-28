@@ -7,8 +7,11 @@
     "start": "bun src/index.ts",
     "dev": "bun --watch --no-clear-screen src/index.ts",
     "docker": "cd docker && docker compose up -d && cd ..",
+    "prisma:generate": "bunx prisma generate --schema src/database/prisma/schema.prisma",
+    "prisma:db:push": "bunx prisma db push --schema src/database/prisma/schema.prisma",
+    "prisma:migrate:deploy": "bunx prisma migrate deploy --schema src/database/prisma/schema.prisma",
     "studio": "bunx prisma studio --schema src/database/prisma/schema.prisma",
-    "up": "bun run docker && concurrently --names \"PRISMA, API\" --prefix-colors \"cyan,magenta\" --prefix \"[{time}] [{name}]\" \"bun run studio\" \"bun dev\" "
+    "up": "bun run docker && bun run prisma:db:push && concurrently --names \"PRISMA, API\" --prefix-colors \"cyan,magenta\" --prefix \"[{time}] [{name}]\" \"bun run studio\" \"bun dev\" "
   },
   "devDependencies": {
     "@types/bun": "1.2.23",

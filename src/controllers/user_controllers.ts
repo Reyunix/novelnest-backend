@@ -13,17 +13,12 @@ export const createUser = async (userData: RegisterForm) => {
   const { userExists, emailExists } = await checkIfUserExists(userData);
 
   if (userExists) {
-    console.log("**username exists**");
     throw new AppError("USERNAME_ALREADY_EXISTS");
   }
 
   if (emailExists) {
-    console.log("**email exists**");
-
     throw new AppError("EMAIL_ALREADY_EXISTS");
   }
-  console.log("**todo bien");
-
   await createUserInDB(userData);
 };
 

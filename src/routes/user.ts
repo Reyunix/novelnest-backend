@@ -23,7 +23,7 @@ dotenv.config()
 export const userRoutes = async (app: FastifyInstance) => {
   app.register(cors, {
     origin: "https://localhost:5173",
-    methods: ["POST", "GET"],
+    methods: ["POST", "GET", "PATCH", "DELETE"],
     credentials: true
   });
 
@@ -34,11 +34,10 @@ export const userRoutes = async (app: FastifyInstance) => {
     try {
       await request.jwtVerify();
             const user = request.user.role
-      console.log(user)
+      console.log("Rol del usuario:", user);
 
       
     } catch (err) {
-      console.log("Nope")
       throw new AppError("UNAUTHORIZED");
     }
   });
@@ -50,24 +49,16 @@ export const userRoutes = async (app: FastifyInstance) => {
       return sendSuccess(reply, "USER_CREATED");
     } catch (error) {
       if (error instanceof AppError) {
-        console.log("APP ERROR**");
         return sendError(reply, error);
       } else {
-        console.log("**Internal Error**");
-        console.log(error);
         return sendError(reply, new AppError("INTERNAL_SERVER_ERROR"))
       }
     }
   });
 
   app.post("/login", {}, async (request, reply) => {
-    console.log("Login endpoint")
     try {
-      console.log("Entra en el Try")
       const loginData = validateLoginForm(request.body);
-      console.log("pasa el validateloginform")
-
-      console.log(loginData)
       const validUser = await validateLoginCredentials(loginData);
       if (validUser) {
         const accessToken = app.jwt.sign(
@@ -132,7 +123,6 @@ export const userRoutes = async (app: FastifyInstance) => {
         sameSite: "none",
       });
 
-    console.log("Cookies eliminadas.")
 
     return sendSuccess(reply, "LOGOUT_SUCCESS");
   });
@@ -144,8 +134,6 @@ export const userRoutes = async (app: FastifyInstance) => {
 
     // Ahora TypeScript sabe qué hay dentro del payload:
     const payload = app.jwt.verify<FastifyJWT['payload']>(refreshToken);
-
-    console.log(payload)
 
     const newAccessToken = app.jwt.sign(
       {

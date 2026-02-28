@@ -43,6 +43,11 @@ export const ErrorsCatalog = {
     statusCode: 500,
     errorCode: "INTERNAL_SERVER_ERROR",
     message: "Error interno del servidor"
+  },
+  EXTERNAL_API_ERROR: {
+    statusCode: 502,
+    errorCode: "EXTERNAL_API_ERROR",
+    message: "Error al comunicarse con el servicio externo"
   }
 } as const;
 

@@ -30,8 +30,8 @@ const SearchInfoSchema = z.object({
 export type SearchInfo = z.infer<typeof SearchInfoSchema>;
 
 const ImageLinksSchema = z.object({
-    "smallThumbnail": z.string().optional(),
-    "thumbnail": z.string().optional(),
+    "smallThumbnail": z.url().optional(),
+    "thumbnail": z.url().optional(),
 });
 export type ImageLinks = z.infer<typeof ImageLinksSchema>;
 
@@ -61,7 +61,7 @@ const AccessInfoSchema = z.object({
     "textToSpeechPermission": z.string().optional(),
     "epub": EpubSchema.optional(),
     "pdf": PdfSchema.optional(),
-    "webReaderLink": z.string().optional(),
+    "webReaderLink": z.url().optional(),
     "accessViewStatus": z.string().optional(),
     "quoteSharingAllowed": z.boolean().optional(),
 });
@@ -90,9 +90,9 @@ const VolumeInfoSchema = z.object({
     "panelizationSummary": PanelizationSummarySchema.optional(),
     "imageLinks": ImageLinksSchema.optional(),
     "language": z.string().optional(),
-    "previewLink": z.string().optional(),
-    "infoLink": z.string().optional(),
-    "canonicalVolumeLink": z.string().optional(),
+    "previewLink": z.url().optional(),
+    "infoLink": z.url().optional(),
+    "canonicalVolumeLink": z.url().optional(),
 });
 export type VolumeInfo = z.infer<typeof VolumeInfoSchema>;
 
@@ -102,7 +102,7 @@ const SaleInfoSchema = z.object({
     "isEbook": z.boolean().optional(),
     "listPrice": SaleInfoListPriceSchema.optional(),
     "retailPrice": SaleInfoListPriceSchema.optional(),
-    "buyLink": z.string().optional(),
+    "buyLink": z.url().optional(),
     "offers": z.array(OfferSchema).optional(),
 });
 export type SaleInfo = z.infer<typeof SaleInfoSchema>;
