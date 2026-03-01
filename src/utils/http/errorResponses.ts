@@ -33,3 +33,4 @@ export class AppError extends Error {
 export const sendError = (reply: FastifyReply, error: AppError) => {
   return reply.status(error.statusCode).send(error.errorResponse);
 };
+

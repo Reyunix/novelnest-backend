@@ -48,6 +48,11 @@ export const ErrorsCatalog = {
     statusCode: 502,
     errorCode: "EXTERNAL_API_ERROR",
     message: "Error al comunicarse con el servicio externo"
+  },
+  INVALID_QUERY_PARAMETER: {
+    statusCode: 400,
+    errorCode: "INVALID_QUERY_PARAMETER",
+    message: "Parámetro de consulta 'q' es requerido y no puede estar vacío"
   }
 } as const;
 

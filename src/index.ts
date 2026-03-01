@@ -1,6 +1,6 @@
 import Fastify from "fastify";
 import { authRoutes } from "./modules/auth/auth.routes";
-import { bookRoutes } from "./routes/book";
+import { bookRoutes } from "./modules/books/books.routes";
 import { rootRoutes } from "./routes/root";
 import dotenv from "dotenv";
 import fastifyCookie from "@fastify/cookie";
@@ -31,8 +31,8 @@ app.register(corsPlugin);
 
 //Routes
 app.register(rootRoutes, { prefix: "/api/v1" });
-app.register(bookRoutes, { prefix: "api/v1/books" });
-app.register(authRoutes, { prefix: "api/v1/auth" });
+app.register(bookRoutes, { prefix: "/api/v1/books" });
+app.register(authRoutes, { prefix: "/api/v1/auth" });
 
 
 app.listen({ port: 3000 }, (err, address) => {
