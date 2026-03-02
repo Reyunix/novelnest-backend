@@ -73,7 +73,7 @@ bun install
 From workspace root:
 
 ```bash
-npm run db:up
+bun run db:up
 ```
 
 From backend folder:
