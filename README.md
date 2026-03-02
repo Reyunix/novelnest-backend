@@ -2,6 +2,10 @@
 
 Backend service for NovelNest (Goodreads-style app) built with Fastify + TypeScript + Prisma + PostgreSQL.
 
+## Repositories
+- Main (hub): https://github.com/Reyunix/novelnest
+- Frontend: https://github.com/Reyunix/novelnest-frontend
+
 ## Tech Stack
 
 - Bun
