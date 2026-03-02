@@ -1,6 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 const API_KEY = process.env.API_KEY;
 const API_BASE_URL = process.env.BASE_URL;
 const API_FIELD = process.env.URL_FIELD;

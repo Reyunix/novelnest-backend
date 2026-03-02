@@ -1,6 +1,7 @@
 import Fastify from "fastify";
 import { authRoutes } from "./modules/auth/auth.routes";
 import { bookRoutes } from "./modules/books/books.routes";
+import { userBooksRoutes } from "./modules/user-books/userBooks.routes";
 import { rootRoutes } from "./routes/root";
 import dotenv from "dotenv";
 import fastifyCookie from "@fastify/cookie";
@@ -15,12 +16,7 @@ dotenv.config();
 const HTTPS_KEY = process.env.HTTPS_KEY;
 const HTTPS_CERT = process.env.HTTPS_CERT;
 
-const app = Fastify({
-  https: {
-    key: fs.readFileSync(HTTPS_KEY as PathOrFileDescriptor),
-    cert: fs.readFileSync(HTTPS_CERT as PathOrFileDescriptor),
-  },
-});
+const app = Fastify();
 
 
 //Plugins
@@ -33,6 +29,7 @@ app.register(corsPlugin);
 app.register(rootRoutes, { prefix: "/api/v1" });
 app.register(bookRoutes, { prefix: "/api/v1/books" });
 app.register(authRoutes, { prefix: "/api/v1/auth" });
+app.register(userBooksRoutes, { prefix: "/api/v1/users/me" });
 
 
 app.listen({ port: 3000 }, (err, address) => {

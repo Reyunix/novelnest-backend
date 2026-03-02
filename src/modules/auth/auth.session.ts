@@ -8,7 +8,7 @@ const REFRESH_TOKEN_MAX_AGE_SECONDS = 60 * 60 * 24 * 7;
 const getCookieBaseOptions = () => ({
   httpOnly: true as const,
   secure: process.env.NODE_ENV === "production",
-  sameSite: "none" as const,
+  sameSite: "lax" as const,
   path: "/",
 });
 

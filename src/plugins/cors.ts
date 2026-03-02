@@ -5,7 +5,7 @@ import fp from "fastify-plugin";
 // Cors plugin function settings
 export const corsPluginImpl: FastifyPluginAsync = async (app) => {
   app.register(cors, {
-    origin: "https://localhost:5173",
+    origin: "http://localhost:5173",
     methods: ["POST", "GET", "PATCH", "DELETE"],
     credentials: true,
   });

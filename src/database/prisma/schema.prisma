@@ -7,6 +7,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum BookStatus {
+  reading
+  completed
+  want_to_read
+  abandoned
+}
+
 enum Role {
   user
   admin
@@ -23,34 +30,58 @@ model User {
   role      Role       @default(user)
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
+  lists     UserList[]
   books     UserBook[]
 }
 
-enum BookStatus {
-  reading
-  completed
-  want_to_read
-  abandoned
-}
-
 model UserBook {
-  id           Int        @id @default(autoincrement())
-  userId       Int
-  googleBookId String
-  title        String
-  authors      String[]
-  thumbnail    String?
+  id                  Int            @id @default(autoincrement())
+  userId              Int
+  googleBookId        String
+  title               String
+  authors             String[]
+  thumbnail           String?
   canonicalVolumeLink String?
-  review       String?
-  rating       Int?
-  status       BookStatus @default(want_to_read)
-  startedAt    DateTime?
-  finishedAt   DateTime?
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  review              String?
+  rating              Int?
+  status              BookStatus     @default(want_to_read)
+  startedAt           DateTime?
+  finishedAt          DateTime?
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+  lists               UserListBook[]
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, googleBookId])
+  @@index([userId, status])
 }
 
+model UserList {
+  id          Int            @id @default(autoincrement())
+  userId      Int
+  name        String         @default("My Collection")
+  description String?
+  isDefault   Boolean        @default(false)
+  isPrivate   Boolean        @default(false)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  listBooks   UserListBook[]
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, name])
+  @@index([userId])
+}
+
+model UserListBook {
+  listId     Int
+  userBookId Int
+  addedAt    DateTime @default(now())
+
+  list UserList @relation(fields: [listId], references: [id], onDelete: Cascade)
+  book UserBook @relation(fields: [userBookId], references: [id], onDelete: Cascade)
+  
+  @@id([listId, userBookId])
+  @@index([userBookId])
+}
