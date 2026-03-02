@@ -1,75 +1,100 @@
 # NovelNest Backend
-Backend service for NovelNest (a Goodreads-style app) built with Fastify + TypeScript + Prisma + PostgreSQL.
+
+Backend service for NovelNest (Goodreads-style app) built with Fastify + TypeScript + Prisma + PostgreSQL.
 
 ## Tech Stack
+
 - Bun
 - Fastify
 - Prisma + PostgreSQL
 - JWT + HTTP-only cookies
-- Zod validation
+- Zod
 
 ## Current Features
+
 - User registration (`POST /api/v1/auth/register`)
 - Login (`POST /api/v1/auth/login`)
 - Logout (`POST /api/v1/auth/logout`)
 - Access token refresh (`POST /api/v1/auth/refresh`)
 - Session check (`GET /api/v1/auth/me`)
-- Book search via Google Books API (`GET /api/v1/books/search?q=...`)
+- Book search proxy to Google Books (`GET /api/v1/books/search?q=...`)
 
 ## Main Structure
-- `src/modules/auth`: auth vertical slice (`routes/controller/service/repo/schema`)
-- `src/modules/books`: book search module
+
+- `src/modules/auth`: auth vertical slice
+- `src/modules/books`: books search module
+- `src/modules/user-books`: user collection module
 - `src/plugins`: global plugins (`auth`, `cors`, `jwt`)
 - `src/database/prisma`: schema and migrations
 
 ## Requirements
-- Bun installed
-- Docker (for PostgreSQL)
-- Local HTTPS certs (mkcert)
+
+- Bun
+- Docker
 
 ## Environment Variables
+
 File: `novelnest-backend/.env`
 
-Required keys:
+Common keys:
 - `DATABASE_URL`
 - `JWT_SECRET`
-- `HTTPS_KEY`
-- `HTTPS_CERT`
+- `API_KEY` (Google Books)
+- `BASE_URL`
+- `URL_FIELD`
 - `NODE_ENV`
 
+Optional (production HTTPS setup only):
+- `HTTPS_KEY`
+- `HTTPS_CERT`
+
+## Local Dev Setup (current)
+
+- Backend runs on: `http://localhost:3000`
+- CORS origin: `http://localhost:5173`
+- Cookies in dev should be:
+  - `sameSite: "lax"`
+  - `secure: false` (when `NODE_ENV=development`)
+
+Important: use `localhost` consistently on frontend and backend.
+
 ## Install
+
 ```bash
 bun install
 ```
 
 ## Database (dev)
-From monorepo root:
+
+From workspace root:
+
 ```bash
-bun run db:up
+npm run db:up
 ```
 
 From backend folder:
+
 ```bash
-bunx prisma migrate deploy --schema src/database/prisma/schema.prisma
-bunx prisma generate --schema src/database/prisma/schema.prisma
+bun run prisma:db:push
+bun run prisma:generate
 ```
 
 ## Run
+
 ```bash
 bun run dev
 ```
-Default server: `https://127.0.0.1:3000`
 
 ## Useful Scripts
+
 - `bun run dev`: watch mode
 - `bun run start`: normal start
 - `bun run studio`: Prisma Studio
 - `bun run docker`: start backend docker services
+- `bun run prisma:db:push`: sync schema
+- `bun run prisma:generate`: generate Prisma client
 
-## Dev Notes
-- CORS currently allows `https://localhost:5173`.
-- `@fastify/jwt` reads token from cookie `access_token`.
-- Stop DB from monorepo root:
-```bash
-bun run db:down
-```
+## Notes
+
+- This backend is intended to be consumed by `novelnest-frontend`.
+- Google API key stays in backend only (not in frontend env).
