@@ -21,12 +21,13 @@ Backend service for NovelNest (Goodreads-style app) built with Fastify + TypeScr
 - Logout (`POST /api/v1/auth/logout`)
 - Access token refresh (`POST /api/v1/auth/refresh`)
 - Session check (`GET /api/v1/auth/me`)
-- Book search proxy to Google Books (`GET /api/v1/books/search?q=...`)
+- Book search via provider adapter (`GET /api/v1/books/search`)
 
 ## Main Structure
 
 - `src/modules/auth`: auth vertical slice
 - `src/modules/books`: books search module
+- `src/modules/books/adapters`: external books providers
 - `src/modules/user-books`: user collection module
 - `src/plugins`: global plugins (`auth`, `cors`, `jwt`)
 - `src/database/prisma`: schema and migrations
@@ -43,14 +44,25 @@ File: `novelnest-backend/.env`
 Common keys:
 - `DATABASE_URL`
 - `JWT_SECRET`
-- `API_KEY` (Google Books)
-- `BASE_URL`
-- `URL_FIELD`
+- `API_BOOKS_PROVIDER`
+- `API_KEY_GOOGLE` (Google Books)
+- `API_BASE_URL_GOOGLE`
+- `API_VOLUME_FIELDS_GOOGLE`
 - `NODE_ENV`
 
 Optional (production HTTPS setup only):
 - `HTTPS_KEY`
 - `HTTPS_CERT`
+
+## Books Provider Selection
+
+Current provider selection is centralized in:
+
+- `src/modules/books/adapters/index.ts`
+
+Behavior:
+- `API_BOOKS_PROVIDER=google` -> uses `GoogleBooksAdapter`
+- invalid provider value -> `INVALID_BOOKS_PROVIDER`
 
 ## Local Dev Setup (current)
 
@@ -101,4 +113,4 @@ bun run dev
 ## Notes
 
 - This backend is intended to be consumed by `novelnest-frontend`.
-- Google API key stays in backend only (not in frontend env).
+- Provider API keys stay in backend only (not in frontend env).
