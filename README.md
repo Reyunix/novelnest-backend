@@ -64,6 +64,32 @@ Behavior:
 - `API_BOOKS_PROVIDER=google` -> uses `GoogleBooksAdapter`
 - invalid provider value -> `INVALID_BOOKS_PROVIDER`
 
+## External API Validation Checks
+
+Use this checklist after changing provider config, adapter code, or DTO mapping.
+
+1. Valid provider check
+- Set `API_BOOKS_PROVIDER=google`.
+- Call `GET /api/v1/books/search?q=malaz`.
+- Expected: `200` + internal books DTO response.
+
+2. Invalid provider check
+- Set `API_BOOKS_PROVIDER=invalid_provider`.
+- Call `GET /api/v1/books/search?q=malaz`.
+- Expected: `INVALID_BOOKS_PROVIDER` error.
+
+3. Query validation check
+- Call `GET /api/v1/books/search` without search terms.
+- Expected: `INVALID_QUERY_PARAMETER` error.
+
+4. DTO contract check
+- Success response contains:
+  - `provider`
+  - `totalItems`
+  - `page`
+  - `limit`
+  - `items[]` (internal fields)
+
 ## Local Dev Setup (current)
 
 - Backend runs on: `http://localhost:3000`
