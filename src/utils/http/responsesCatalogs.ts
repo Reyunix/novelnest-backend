@@ -53,6 +53,11 @@ export const ErrorsCatalog = {
     statusCode: 400,
     errorCode: "INVALID_QUERY_PARAMETER",
     message: "Parámetro de consulta 'q' es requerido y no puede estar vacío"
+  },
+  INVALID_BOOKS_PROVIDER: {
+    statusCode: 503,
+    errorCode: "INVALID_BOOKS_PROVIDER",
+    message: "Proveedor de libros no soportado o mal configurado"
   }
 } as const;
 
