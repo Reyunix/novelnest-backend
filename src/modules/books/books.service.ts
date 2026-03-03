@@ -1,7 +1,7 @@
-import { ApiResponse } from "@/schemas/bookApiSchema";
 import { AppError } from "@/utils/http/errorResponses";
-import { SearchBookQuery, searchBookQuerySchema } from "./books.schema";
 import { getBooksAdapter } from "./adapters";
+import { BooksSearchResponseDto } from "./books.dto";
+import { SearchBookQuery, searchBookQuerySchema } from "./books.schema";
 
 export const validateSearchQuery = (query: unknown): SearchBookQuery => {
   const parsedQuery = searchBookQuerySchema.safeParse(query);
@@ -15,7 +15,7 @@ export const validateSearchQuery = (query: unknown): SearchBookQuery => {
 
 export const searchBooks = async (
   query: SearchBookQuery,
-): Promise<ApiResponse> => {
+): Promise<BooksSearchResponseDto> => {
   const adapter = getBooksAdapter();
   return adapter.search(query);
 };

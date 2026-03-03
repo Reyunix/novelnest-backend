@@ -1,6 +1,6 @@
 import { AppError } from "@/utils/http/errorResponses";
 import { BooksAdapter } from "./books.adapter";
-import { GoogleBooksAdapter } from "./googleBooks.adapter";
+import { GoogleBooksAdapter } from "./google/googleBooks.adapter";
 
 const googleBooksAdapter = new GoogleBooksAdapter();
 
