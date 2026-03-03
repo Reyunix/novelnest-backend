@@ -5,19 +5,13 @@ import { userBooksRoutes } from "./modules/user-books/userBooks.routes";
 import { rootRoutes } from "./routes/root";
 import dotenv from "dotenv";
 import fastifyCookie from "@fastify/cookie";
-import fs from "fs";
-import { PathOrFileDescriptor } from "fs";
 import { authPlugin } from "./plugins/auth";
 import { corsPlugin } from "./plugins/cors";
 import { jwtPlugin } from "./plugins/jwt";
 
 dotenv.config();
 
-const HTTPS_KEY = process.env.HTTPS_KEY;
-const HTTPS_CERT = process.env.HTTPS_CERT;
-
 const app = Fastify();
-
 
 //Plugins
 app.register(fastifyCookie);
