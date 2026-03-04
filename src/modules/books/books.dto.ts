@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const BooksSearchItemDtoSchema = z.object({
-  id: z.string(),
+  providerBookId: z.string(), 
   title: z.string(),
   authors: z.array(z.string()),
   publisher: z.string().nullable(),

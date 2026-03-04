@@ -5,7 +5,8 @@ export type UserBookStatus = typeof UserBookStatus[number];
 
 // Post request schema for creating a user book entry
 const CreateUserBookSchema = z.object({
-    googleBookId: z.string().min(1),
+    provider: z.string().min(1),
+    providerBookId: z.string().min(1),
     title: z.string().trim().min(1),
     status: z.enum(UserBookStatus).optional().default("want_to_read"),
     authors: z.array(z.string()).optional().default([]),

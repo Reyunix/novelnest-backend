@@ -34,7 +34,7 @@ const mapGoogleItemToDto = (item: GoogleBooksVolumeItem): BooksSearchItemDto => 
   const info = item.volumeInfo;
 
   return {
-    id: item.id,
+    providerBookId: item.id,
     title: info?.title ?? "Untitled",
     authors: info?.authors ?? [],
     publisher: info?.publisher ?? null,

@@ -140,6 +140,10 @@ bun run dev
 
 - Session check flow (`GET /api/v1/auth/me`): https://github.com/Reyunix/novelnest/blob/main/docs/backend/auth-me-flow.md
 
+## Error Handling Documentation
+
+- Global Fastify error handler flow: https://github.com/Reyunix/novelnest/blob/main/docs/backend/error-handler.md
+
 ## Notes
 
 - This backend is intended to be consumed by `novelnest-frontend`.
