@@ -8,6 +8,10 @@ import {
 } from "./auth.controller";
 
 export const authRoutes = async (app: FastifyInstance) => {
+  app.get("/me", { preHandler: [app.authenticate] }, async (request, reply) => {
+    return await MeController(request, reply);
+  });
+
   app.post("/register", {}, async (request, reply) => {
     return await RegisterController(request, reply);
   });
@@ -22,9 +26,5 @@ export const authRoutes = async (app: FastifyInstance) => {
 
   app.post("/refresh", async (request, reply) => {
     return await RefreshController(request, reply, app);
-  });
-
-  app.get("/me", { preHandler: [app.authenticate] }, async (request, reply) => {
-    return await MeController(request, reply);
   });
 };

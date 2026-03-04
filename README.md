@@ -136,6 +136,10 @@ bun run dev
 - `bun run prisma:db:push`: sync schema
 - `bun run prisma:generate`: generate Prisma client
 
+## Auth Documentation
+
+- Session check flow (`GET /api/v1/auth/me`): https://github.com/Reyunix/novelnest/blob/main/docs/backend/auth-me-flow.md
+
 ## Notes
 
 - This backend is intended to be consumed by `novelnest-frontend`.

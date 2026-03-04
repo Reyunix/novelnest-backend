@@ -14,6 +14,17 @@ import {
   signAuthTokens,
 } from "./auth.session";
 
+export const MeController = async (request: FastifyRequest, reply: FastifyReply) => {
+  try {
+    return sendSuccess(reply, "VALID_TOKEN", { user: request.user });
+  } catch (error) {
+    if (error instanceof AppError) {
+      return sendError(reply, error);
+    }
+    return sendError(reply, new AppError("INTERNAL_SERVER_ERROR"));
+  }
+};
+
 export const RegisterController = async (
   request: FastifyRequest,
   reply: FastifyReply,
@@ -79,13 +90,3 @@ export const RefreshController = async (
   }
 };
 
-export const MeController = async (request: FastifyRequest, reply: FastifyReply) => {
-  try {
-    return sendSuccess(reply, "VALID_TOKEN", { user: request.user });
-  } catch (error) {
-    if (error instanceof AppError) {
-      return sendError(reply, error);
-    }
-    return sendError(reply, new AppError("INTERNAL_SERVER_ERROR"));
-  }
-};

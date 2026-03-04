@@ -67,7 +67,7 @@ export const refreshAccessToken = (
       role: verifiedPayload.role,
     };
 
-    return app.jwt.sign(payload, { expiresIn: TOKEN_CONSTANTS.ACCESS_TOKEN_EXPIRATION });
+    return app.jwt.sign(payload, { expiresIn: TOKEN_CONSTANTS.ACCESS_TOKEN_TTL_SECONDS });
   } catch {
     throw new AppError("INVALID_TOKEN");
   }
