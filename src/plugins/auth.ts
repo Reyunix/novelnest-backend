@@ -18,7 +18,7 @@ const authPluginImpl: FastifyPluginAsync = async (app) => {
     try {
       await request.jwtVerify();
     } catch {
-      throw new AppError("UNAUTHORIZED"); // This will be caught in auth.controller
+      throw new AppError("UNAUTHORIZED");
     }
   });
 };

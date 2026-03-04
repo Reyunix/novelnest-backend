@@ -107,5 +107,10 @@ export const SuccessCatalog = {
     statusCode: 200,
     message: "Token actualizado correctamente.",
     code: "TOKEN_REFRESHED"
+  },
+  BOOKS_SEARCH_SUCCESS: {
+    statusCode: 200,
+    message: "Libros encontrados correctamente",
+    code: "BOOKS_SEARCH_SUCCESS"
   }
 } as const;

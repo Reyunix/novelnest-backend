@@ -8,12 +8,14 @@ import fastifyCookie from "@fastify/cookie";
 import { authPlugin } from "./plugins/auth";
 import { corsPlugin } from "./plugins/cors";
 import { jwtPlugin } from "./plugins/jwt";
+import { errorHandlerPlugin } from "./plugins/errorHandler";
 
 dotenv.config();
 
 const app = Fastify();
 
 //Plugins
+app.register(errorHandlerPlugin)
 app.register(fastifyCookie);
 app.register(jwtPlugin);
 app.register(authPlugin);
