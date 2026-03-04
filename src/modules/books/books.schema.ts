@@ -9,7 +9,7 @@ export const searchBookQuerySchema = z
     author: nonEmptyString.optional(),
     subject: nonEmptyString.optional(),
     isbn: nonEmptyString.optional(),
-    sort: z.enum(["relevance", "newest"]).default("relevance"),
+    sortBy: z.enum(["relevance", "newest"]).default("relevance"),
     page: z.coerce.number().int().min(1).default(1),
     limit: z.coerce.number().int().min(1).max(40).default(40),
     printType: z.enum(["all", "books", "magazines"]).default("books"),

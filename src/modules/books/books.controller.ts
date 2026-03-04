@@ -8,6 +8,7 @@ export const searchController = async (
 ) => {
   try {
     const parsedQuery = validateSearchQuery(request.query);
+    console.log("Parsed search query:", parsedQuery);
     const books = await searchBooks(parsedQuery);
 
     return books;

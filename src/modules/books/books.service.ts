@@ -4,6 +4,7 @@ import { BooksSearchResponseDto } from "./books.dto";
 import { SearchBookQuery, searchBookQuerySchema } from "./books.schema";
 
 export const validateSearchQuery = (query: unknown): SearchBookQuery => {
+  console.log("Validating search query:", query);
   const parsedQuery = searchBookQuerySchema.safeParse(query);
 
   if (!parsedQuery.success) {

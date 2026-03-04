@@ -98,7 +98,7 @@ export class GoogleBooksAdapter implements BooksAdapter {
     url.searchParams.set("startIndex", String(startIndex));
     url.searchParams.set("maxResults", String(query.limit));
     url.searchParams.set("printType", query.printType);
-    url.searchParams.set("orderBy", query.sort);
+    url.searchParams.set("orderBy", query.sortBy);
 
     if (API_VOLUME_FIELDS_GOOGLE) {
       url.searchParams.set("fields", API_VOLUME_FIELDS_GOOGLE);
@@ -119,7 +119,7 @@ export class GoogleBooksAdapter implements BooksAdapter {
     if (API_KEY_GOOGLE) {
       url.searchParams.set("key", API_KEY_GOOGLE);
     }
-
+    console.log("Constructed Google Books API URL:", url.toString());
     return url.toString();
   }
 }
