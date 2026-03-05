@@ -4,7 +4,7 @@ const nonEmptyString = z.string().trim().min(1);
 
 export const searchBookQuerySchema = z
   .object({
-    q: nonEmptyString.optional(),
+    all: nonEmptyString.optional(),
     title: nonEmptyString.optional(),
     author: nonEmptyString.optional(),
     subject: nonEmptyString.optional(),
@@ -21,15 +21,15 @@ export const searchBookQuerySchema = z
   })
   .superRefine((value, ctx) => {
     const hasSearchTerm = Boolean(
-      value.q || value.title || value.author || value.subject || value.isbn,
+      value.all || value.title || value.author || value.subject || value.isbn,
     );
 
     if (!hasSearchTerm) {
       ctx.addIssue({
         code: "custom",
-        path: ["q"],
+        path: ["all"],
         message:
-          "At least one search parameter is required: q, title, author, subject, or isbn",
+          "At least one search parameter is required: all, title, author, subject, or isbn",
       });
     }
   });

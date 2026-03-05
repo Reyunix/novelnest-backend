@@ -21,7 +21,7 @@ const normalizeTerm = (term: string): string => term.trim().replace(/\s+/g, " ")
 const buildGoogleQuery = (query: SearchBookQuery): string => {
   const terms: string[] = [];
 
-  if (query.q) terms.push(normalizeTerm(query.q));
+  if (query.all) terms.push(normalizeTerm(query.all));
   if (query.title) terms.push(`intitle:${normalizeTerm(query.title)}`);
   if (query.author) terms.push(`inauthor:${normalizeTerm(query.author)}`);
   if (query.subject) terms.push(`subject:${normalizeTerm(query.subject)}`);

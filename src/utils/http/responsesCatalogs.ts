@@ -52,7 +52,7 @@ export const ErrorsCatalog = {
   INVALID_QUERY_PARAMETER: {
     statusCode: 400,
     errorCode: "INVALID_QUERY_PARAMETER",
-    message: "Parámetro de consulta 'q' es requerido y no puede estar vacío"
+    message: "Parámetro de consulta 'all' es requerido y no puede estar vacío"
   },
   INVALID_BOOKS_PROVIDER: {
     statusCode: 503,
