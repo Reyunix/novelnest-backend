@@ -58,6 +58,16 @@ export const ErrorsCatalog = {
     statusCode: 503,
     errorCode: "INVALID_BOOKS_PROVIDER",
     message: "Proveedor de libros no soportado o mal configurado"
+  },
+  INVALID_SAVE_USERBOOK_DATA:{
+    statusCode: 400,
+    errorCode: "INVALID_SAVE_USERBOOK_DATA",
+    message: "Error al guardar el libro. Datos inválidos."
+  },
+  USERBOOK_ALREADY_IN_LIST:{
+    statusCode: 409,
+    errorCode: "USERBOOK_ALREADY_IN_LIST",
+    message: "Este libro ya está en la lista"
   }
 } as const;
 
@@ -112,5 +122,10 @@ export const SuccessCatalog = {
     statusCode: 200,
     message: "Libros encontrados correctamente",
     code: "BOOKS_SEARCH_SUCCESS"
+  },
+  BOOK_SAVED:{
+    statusCode: 201,
+    message:"Libro guardado correctamente",
+    code:"BOOK_SAVED"
   }
 } as const;

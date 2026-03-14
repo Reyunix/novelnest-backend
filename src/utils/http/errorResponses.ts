@@ -22,15 +22,20 @@ export class AppError extends Error {
     this.statusCode = statusCode;
     this.errorResponse = {
       success: false,
-      errorCode: code,  
+      errorCode: code,
       message: customMessage ?? message,
     };
-
     Object.setPrototypeOf(this, new.target.prototype);
+  }
+  toResponse() {
+    return {
+      success: false,
+      errorCode: this.errorCode,
+      message: this.message,
+    };
   }
 }
 
 export const sendError = (reply: FastifyReply, error: AppError) => {
-  return reply.status(error.statusCode).send(error.errorResponse);
+  return reply.status(error.statusCode).send(error.toResponse());
 };
-

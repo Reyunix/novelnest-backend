@@ -54,7 +54,7 @@ model UserBook {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, providerBookId])
+  @@unique([userId, providerBookId, provider])
   @@index([userId, status])
 }
 
