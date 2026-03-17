@@ -1,14 +1,16 @@
-import { db } from "@/database/db";
 import { CreateUserBookInput } from "./userBooks.types";
 import { AppError } from "@/utils/http/errorResponses";
-import { Prisma } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
+type PrismaDbOrTx = Pick<PrismaClient, "userBook">;
 
-export const saveUserBook = async (saveUserBook: CreateUserBookInput) => {
-  const bookAlreadyInList = await checkIfUserBookAlreadyExists(saveUserBook);
-  if (bookAlreadyInList) throw new AppError("USERBOOK_ALREADY_IN_LIST");
-
+export const saveUserBook = async (
+  tx: PrismaDbOrTx,
+  saveUserBook: CreateUserBookInput,
+) => {
+  const alreadyExists = await checkIfUserBookAlreadyExists(tx, saveUserBook);
+  if (alreadyExists) throw new AppError("USERBOOK_ALREADY_IN_LIST");
   try {
-    return await db.userBook.create({ data: saveUserBook });
+    return await tx.userBook.create({ data: saveUserBook });
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
@@ -21,12 +23,13 @@ export const saveUserBook = async (saveUserBook: CreateUserBookInput) => {
 };
 
 const checkIfUserBookAlreadyExists = async (
+  tx: PrismaDbOrTx,
   saveUserBook: CreateUserBookInput,
 ) => {
   const providerBookId = saveUserBook.providerBookId;
   const userId = saveUserBook.userId;
   const provider = saveUserBook.provider;
-  const userBook = await db.userBook.findFirst({
+  const userBook = await tx.userBook.findFirst({
     where: { userId, provider, providerBookId },
   });
 

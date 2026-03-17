@@ -62,3 +62,4 @@ export const RefreshController = async (
   setAccessTokenCookie(reply, newAccessToken);
   return sendSuccess(reply, "TOKEN_REFRESHED");
 };
+

@@ -1,6 +1,7 @@
 import { db } from "@/database/db";
 import type { RegisterForm } from "./auth.schema";
 import { hashPassword } from "@/utils/hash";
+import { createDefaultUserLists } from "../user-lists/userLists.repo";
 
 export const checkIfUserExists = async ({
   userEmail,
@@ -27,15 +28,18 @@ export const checkIfLoginUserExists = async (identifier: string) => {
   return user;
 };
 
-export const createUserInDB = async (userData: RegisterForm) => {
+export const createUserWithDefaultLists = async (userData: RegisterForm) => {
   const hashedPassword = await hashPassword(userData.userPassword);
-  const newUser = await db.user.create({
-    data: {
-      name: userData.userName,
-      email: userData.userEmail,
-      password: hashedPassword,
-      address: userData.userAddress || null,
-    },
+  return await db.$transaction(async (tx) => {
+    const newUser = await tx.user.create({
+      data: {
+        name: userData.userName,
+        email: userData.userEmail,
+        password: hashedPassword,
+        address: userData.userAddress || null,
+      },
+    });
+    await createDefaultUserLists(tx, newUser.id);
+    return newUser;
   });
-  return newUser;
 };

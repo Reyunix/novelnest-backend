@@ -68,6 +68,12 @@ export const ErrorsCatalog = {
     statusCode: 409,
     errorCode: "USERBOOK_ALREADY_IN_LIST",
     message: "Este libro ya está en la lista"
+  },
+
+  DEFAULT_STATUS_LIST_NOT_FOUND:{
+    statusCode: 500,
+    errorCode: "DEFAULT_STATUS_LIST_NOT_FOUND",
+    message: "No se ha encontrado la lista por defecto correspondiente al estado del libro"
   }
 } as const;
 

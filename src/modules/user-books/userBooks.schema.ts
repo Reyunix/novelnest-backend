@@ -10,8 +10,8 @@ const SaveUserBookSchema = z.object({
     title: nonEmptyString,
     status: z.enum(UserBookStatus).default("want_to_read"),
     authors: z.array(nonEmptyString).default([]),
-    thumbnail: z.url().optional(),
-    canonicalVolumeLink: z.url().optional(),
+    thumbnail: z.url().optional().nullable(),
+    canonicalVolumeLink: z.url().optional().nullable(),
 })
 
 export type saveUserBookType = z.infer<typeof SaveUserBookSchema>

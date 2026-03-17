@@ -1,6 +1,6 @@
 import type { FastifyInstance } from "fastify";
 import { checkIfLoginUserExists, checkIfUserExists } from "./auth.repo";
-import { createUserInDB } from "./auth.repo";
+import { createUserWithDefaultLists } from "./auth.repo";
 import { parseLoginForm, parseRegisterForm } from "./auth.schema";
 import { comparePasswords } from "@/utils/hash";
 import { AppError } from "@/utils/http/errorResponses";
@@ -16,7 +16,7 @@ export const createUser = async (rawData: unknown) => {
 
   if (emailAlreadyExists) throw new AppError("EMAIL_ALREADY_EXISTS");
 
-  await createUserInDB(userData);
+  return await createUserWithDefaultLists(userData);
 };
 
 export const validateLoginCredentials = async (
