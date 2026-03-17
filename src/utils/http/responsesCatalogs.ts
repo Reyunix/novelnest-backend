@@ -74,6 +74,11 @@ export const ErrorsCatalog = {
     statusCode: 500,
     errorCode: "DEFAULT_STATUS_LIST_NOT_FOUND",
     message: "No se ha encontrado la lista por defecto correspondiente al estado del libro"
+  },
+  INVALID_USERLIST_PARAMS: {
+    statusCode: 400,
+    errorCode: "INVALID_USERLIST_PARAMS",
+    message: "Error de formato. ListId debe ser un número."
   }
 } as const;
 
@@ -133,5 +138,10 @@ export const SuccessCatalog = {
     statusCode: 201,
     message:"Libro guardado correctamente",
     code:"BOOK_SAVED"
+  },
+  USERLISTS_FOUND: {
+    statusCode: 200,
+    message: "Listas encontradas correctamente",
+    code: "USERLISTS_FOUND"
   }
 } as const;

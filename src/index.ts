@@ -9,6 +9,7 @@ import { authPlugin } from "./plugins/auth";
 import { corsPlugin } from "./plugins/cors";
 import { jwtPlugin } from "./plugins/jwt";
 import { errorHandlerPlugin } from "./plugins/errorHandler";
+import { userListsRoutes } from "./modules/user-lists/userLists.routes";
 
 dotenv.config();
 
@@ -25,7 +26,8 @@ app.register(corsPlugin);
 app.register(rootRoutes, { prefix: "/api/v1" });
 app.register(bookRoutes, { prefix: "/api/v1/books" });
 app.register(authRoutes, { prefix: "/api/v1/auth" });
-app.register(userBooksRoutes, { prefix: "/api/v1/users/me" });
+app.register(userBooksRoutes, { prefix: "/api/v1/users/me/books" });
+app.register(userListsRoutes, { prefix: "/api/v1/users/me/lists"})
 
 
 app.listen({ port: 3000 }, (err, address) => {

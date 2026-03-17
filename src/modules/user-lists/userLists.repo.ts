@@ -1,5 +1,6 @@
 import { DEFAULT_USER_LISTS } from "./userLists.constants";
 import { PrismaClient } from "@prisma/client";
+import { db } from "@/database/db";
 type PrismaDbOrTx = Pick<PrismaClient, "userList">;
 
 export const createDefaultUserLists = async (
@@ -15,7 +16,18 @@ export const createDefaultUserLists = async (
   });
 };
 
-export const getUserDefaultLists = async (tx:PrismaDbOrTx, userId: number) => {
+export const getUserDefaultLists = async (
+  prisma: PrismaDbOrTx,
+  userId: number,
+) => {
   const isDefault = true;
-  return await tx.userList.findMany({ where: { userId, isDefault } });
+  return await prisma.userList.findMany({ where: { userId, isDefault } });
+};
+
+export const getUserListById = async (id: number, userId: number) => {
+  return await db.userList.findFirst({ where: { id, userId } });
+};
+
+export const getUserLists = async (userId: number) => {
+  return await db.userList.findMany({ where: { userId } });
 };
