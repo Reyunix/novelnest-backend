@@ -1,6 +1,16 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { createUserBook, validateSaveUserBook } from "./userBooks.service";
 import { sendSuccess } from "@/utils/http/successResponses";
+import { getUserBooks } from "./userBooks.repo";
+
+export const getUserBooksController = async (
+  request: FastifyRequest,
+  reply: FastifyReply,
+) => {
+  const userId = request.user.userId;
+  const userBooks = await getUserBooks(userId);
+  return sendSuccess(reply, "USERBOOKS_FOUND", userBooks);
+};
 
 export const createUserBookController = async (
   request: FastifyRequest,

@@ -64,10 +64,10 @@ export const ErrorsCatalog = {
     errorCode: "INVALID_SAVE_USERBOOK_DATA",
     message: "Error al guardar el libro. Datos inválidos."
   },
-  USERBOOK_ALREADY_IN_LIST:{
+  USERBOOK_ALREADY_SAVED:{
     statusCode: 409,
-    errorCode: "USERBOOK_ALREADY_IN_LIST",
-    message: "Este libro ya está en la lista"
+    errorCode: "USERBOOK_ALREADY_SAVED",
+    message: "El usuario ya tiene este libro guardado"
   },
 
   DEFAULT_STATUS_LIST_NOT_FOUND:{
@@ -79,6 +79,11 @@ export const ErrorsCatalog = {
     statusCode: 400,
     errorCode: "INVALID_USERLIST_PARAMS",
     message: "Error de formato. ListId debe ser un número."
+  },
+  USERLIST_NOT_FOUND:{
+    statusCode: 404,
+    errorCode: "USERLIST_NOT_FOUND",
+    message: "La lista solicitada no existe o no pertenece al usuario"
   }
 } as const;
 
@@ -126,7 +131,7 @@ export const SuccessCatalog = {
   },
   TOKEN_REFRESHED: {
     statusCode: 200,
-    message: "Token actualizado correctamente.",
+    message: "Token actualizado correctamente",
     code: "TOKEN_REFRESHED"
   },
   BOOKS_SEARCH_SUCCESS: {
@@ -143,5 +148,10 @@ export const SuccessCatalog = {
     statusCode: 200,
     message: "Listas encontradas correctamente",
     code: "USERLISTS_FOUND"
+  },
+  USERBOOKS_FOUND: {
+    statusCode: 200,
+    message: "Libros encontrados correctamente",
+    code: "USERBOOKS_FOUND"
   }
 } as const;

@@ -6,6 +6,10 @@ import {
 } from "./userLists.controller";
 
 export const userListsRoutes = (app: FastifyInstance) => {
+  app.get("/", { preHandler: app.authenticate }, async (request, reply) => {
+    return await getUserListsController(request, reply);
+  });
+
   app.get(
     "/default",
     { preHandler: app.authenticate },
@@ -13,10 +17,6 @@ export const userListsRoutes = (app: FastifyInstance) => {
       return await getDefaultUserListsController(request, reply);
     },
   );
-
-  app.get("/", { preHandler: app.authenticate }, async (request, reply) => {
-    return await getUserListsController(request, reply);
-  });
 
   app.get(
     "/:listId",
