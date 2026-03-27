@@ -84,7 +84,22 @@ export const ErrorsCatalog = {
     statusCode: 404,
     errorCode: "USERLIST_NOT_FOUND",
     message: "La lista solicitada no existe o no pertenece al usuario"
-  }
+  },
+  INVALID_USERBOOK_PARAMS:{
+      statusCode: 400,
+      errorCode: "INVALID_USERBOOK_PARAMS",
+      message: "Error de formato. bookId debe ser un número."
+  },
+  USERBOOK_NOT_FOUND:{
+    statusCode: 404,
+    errorCode: "USERBOOK_NOT_FOUND",
+    message: "No se encontró el libro requerido"
+  },
+  INVALID_UPDATE_USERBOOK_BODY: {
+    statusCode: 400,
+    errorCode: "INVALID_UPDATE_USERBOOK_BODY",
+    message: "Datos inválidos. userId debe ser un número."
+  },
 } as const;
 
 
@@ -153,5 +168,15 @@ export const SuccessCatalog = {
     statusCode: 200,
     message: "Libros encontrados correctamente",
     code: "USERBOOKS_FOUND"
+  },
+  BOOK_DELETED:{
+    statusCode: 200,
+    message: "Libro eliminado correctamente",
+    code: "BOOK_DELETED"
+  },
+  BOOK_STATUS_UPDATED: {
+    statusCode: 200,
+    message: "Estado del libro actualizado correctamente",
+    code: "BOOK_STATUS_UPDATED"
   }
 } as const;

@@ -1,12 +1,13 @@
-import { CreateUserBookInput } from "./userBooks.types";
+import { CreateUserBookInput, userBookStatusData } from "./userBooks.types";
 import { AppError } from "@/utils/http/errorResponses";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { db } from "@/database/db";
+import type { UserBookStatus } from "./userBooks.schema";
 type PrismaDbOrTx = Pick<PrismaClient, "userBook">;
 
-export const getUserBooks = async (userId: number) =>{
-  return await db.userBook.findMany({where:{userId}})
-}
+export const getUserBooks = async (userId: number) => {
+  return await db.userBook.findMany({ where: { userId } });
+};
 
 export const saveUserBook = async (
   tx: PrismaDbOrTx,
@@ -39,4 +40,41 @@ const checkIfUserBookAlreadyExists = async (
   });
 
   return userBook !== null;
+};
+
+export const deleteUserBook = async (id: number, userId: number) => {
+  try {
+    await db.userBook.delete({ where: { id, userId } });
+  } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2025"
+    ) {
+      throw new AppError("USERBOOK_NOT_FOUND");
+    }
+    throw error;
+  }
+};
+
+export const updateUserBookStatus = async (
+  tx: PrismaDbOrTx,
+  { id, userId, status }: userBookStatusData,
+) => {
+  try {
+    const updatedBook = tx.userBook.update({
+      where: { id, userId },
+      data: {
+        status,
+      },
+    });
+    return updatedBook;
+  } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2025"
+    ) {
+      throw new AppError("USERBOOK_NOT_FOUND");
+    }
+    throw error;
+  }
 };

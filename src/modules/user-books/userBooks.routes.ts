@@ -1,7 +1,9 @@
 import { FastifyInstance } from "fastify";
 import {
   createUserBookController,
+  deleteUserBookController,
   getUserBooksController,
+  updateUserBookStatusController,
 } from "./userBooks.controller";
 
 export const userBooksRoutes = async (app: FastifyInstance) => {
@@ -10,7 +12,6 @@ export const userBooksRoutes = async (app: FastifyInstance) => {
   });
 
   app.post("/", { preHandler: [app.authenticate] }, async (request, reply) => {
-    console.log("Received request to save book:", request.body);
     return await createUserBookController(request, reply);
   });
 
@@ -18,7 +19,15 @@ export const userBooksRoutes = async (app: FastifyInstance) => {
     "/:bookId",
     { preHandler: [app.authenticate] },
     async (request, reply) => {
-      return;
+      return await deleteUserBookController(request, reply);
+    },
+  );
+
+  app.patch(
+    "/:bookId/status",
+    { preHandler: [app.authenticate] },
+    async (request, reply) => {
+      return await updateUserBookStatusController(request, reply);
     },
   );
 };
