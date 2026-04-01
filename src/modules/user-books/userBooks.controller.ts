@@ -3,6 +3,7 @@ import {
   createUserBook,
   UpdateAndSyncUserBookStatus,
   validateBodyUpdateUserBookStatus,
+  validateGetUserBooksQuery,
   validateParamsDeleteUserBook,
   validateParamsUpdateUserBookStatus,
   validateSaveUserBook,
@@ -14,8 +15,9 @@ export const getUserBooksController = async (
   request: FastifyRequest,
   reply: FastifyReply,
 ) => {
+  const status = validateGetUserBooksQuery(request.query)
   const userId = request.user.userId;
-  const userBooks = await getUserBooks(userId);
+  const userBooks = await getUserBooks(userId, status);
   return sendSuccess(reply, "USERBOOKS_FOUND", userBooks);
 };
 

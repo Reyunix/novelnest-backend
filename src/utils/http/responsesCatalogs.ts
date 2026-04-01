@@ -29,79 +29,84 @@ export const ErrorsCatalog = {
     errorCode: "INVALID_REGISTER_DATA",
     message: "Campos de registro incorrectos",
   },
-  INVALID_TOKEN:{
+  INVALID_TOKEN: {
     statusCode: 401,
     errorCode: "INVALID_TOKEN",
-    message: "Token inválido o expirado. Inicia sesión nuevamente"
+    message: "Token inválido o expirado. Inicia sesión nuevamente",
   },
   UNAUTHORIZED: {
-  statusCode: 401,
-  errorCode: "UNAUTHORIZED",
-  message: "Acceso no autorizado. Es necesario iniciar sesión"
-},
+    statusCode: 401,
+    errorCode: "UNAUTHORIZED",
+    message: "Acceso no autorizado. Es necesario iniciar sesión",
+  },
   INTERNAL_SERVER_ERROR: {
     statusCode: 500,
     errorCode: "INTERNAL_SERVER_ERROR",
-    message: "Error interno del servidor"
+    message: "Error interno del servidor",
   },
   EXTERNAL_API_ERROR: {
     statusCode: 502,
     errorCode: "EXTERNAL_API_ERROR",
-    message: "Error al comunicarse con el servicio externo"
+    message: "Error al comunicarse con el servicio externo",
   },
   INVALID_QUERY_PARAMETER: {
     statusCode: 400,
     errorCode: "INVALID_QUERY_PARAMETER",
-    message: "Parámetro de consulta 'all' es requerido y no puede estar vacío"
+    message: "Parámetro de consulta 'all' es requerido y no puede estar vacío",
   },
   INVALID_BOOKS_PROVIDER: {
     statusCode: 503,
     errorCode: "INVALID_BOOKS_PROVIDER",
-    message: "Proveedor de libros no soportado o mal configurado"
+    message: "Proveedor de libros no soportado o mal configurado",
   },
-  INVALID_SAVE_USERBOOK_DATA:{
+  INVALID_SAVE_USERBOOK_DATA: {
     statusCode: 400,
     errorCode: "INVALID_SAVE_USERBOOK_DATA",
-    message: "Error al guardar el libro. Datos inválidos."
+    message: "Error al guardar el libro. Datos inválidos.",
   },
-  USERBOOK_ALREADY_SAVED:{
+  USERBOOK_ALREADY_SAVED: {
     statusCode: 409,
     errorCode: "USERBOOK_ALREADY_SAVED",
-    message: "El usuario ya tiene este libro guardado"
+    message: "El usuario ya tiene este libro guardado",
   },
 
-  DEFAULT_STATUS_LIST_NOT_FOUND:{
+  DEFAULT_STATUS_LIST_NOT_FOUND: {
     statusCode: 500,
     errorCode: "DEFAULT_STATUS_LIST_NOT_FOUND",
-    message: "No se ha encontrado la lista por defecto correspondiente al estado del libro"
+    message:
+      "No se ha encontrado la lista por defecto correspondiente al estado del libro",
   },
   INVALID_USERLIST_PARAMS: {
     statusCode: 400,
     errorCode: "INVALID_USERLIST_PARAMS",
-    message: "Error de formato. ListId debe ser un número."
+    message: "Error de formato. ListId debe ser un número.",
   },
-  USERLIST_NOT_FOUND:{
+  USERLIST_NOT_FOUND: {
     statusCode: 404,
     errorCode: "USERLIST_NOT_FOUND",
-    message: "La lista solicitada no existe o no pertenece al usuario"
+    message: "La lista solicitada no existe o no pertenece al usuario",
   },
-  INVALID_USERBOOK_PARAMS:{
-      statusCode: 400,
-      errorCode: "INVALID_USERBOOK_PARAMS",
-      message: "Error de formato. bookId debe ser un número."
+  INVALID_USERBOOK_PARAMS: {
+    statusCode: 400,
+    errorCode: "INVALID_USERBOOK_PARAMS",
+    message: "Error de formato. bookId debe ser un número.",
   },
-  USERBOOK_NOT_FOUND:{
+  USERBOOK_NOT_FOUND: {
     statusCode: 404,
     errorCode: "USERBOOK_NOT_FOUND",
-    message: "No se encontró el libro requerido"
+    message: "No se encontró el libro requerido",
   },
   INVALID_UPDATE_USERBOOK_BODY: {
     statusCode: 400,
     errorCode: "INVALID_UPDATE_USERBOOK_BODY",
-    message: "Datos inválidos. userId debe ser un número."
+    message: "Datos inválidos. userId debe ser un número.",
+  },
+  INVALID_GET_USERBOOKS_PARAMS: {
+    statusCode: 400,
+    errorCode: "INVALID_GET_USERBOOKS_PARAMS",
+    message: "Error de formato. status debe ser un valor válido.",
   },
 } as const;
-
 
 export const SuccessCatalog = {
   USER_CREATED: {
@@ -134,12 +139,12 @@ export const SuccessCatalog = {
     message: "Inicio de sesión exitoso",
     code: "LOGIN_SUCCESS",
   },
-  VALID_TOKEN:{
-    statusCode:200,
+  VALID_TOKEN: {
+    statusCode: 200,
     message: "Acceso autorizado, token válido.",
-    code: "VALID_TOKEN"
+    code: "VALID_TOKEN",
   },
-    LOGOUT_SUCCESS: {
+  LOGOUT_SUCCESS: {
     statusCode: 200,
     message: "Sesión cerrada con éxito",
     code: "LOGOUT_SUCCESS",
@@ -147,36 +152,36 @@ export const SuccessCatalog = {
   TOKEN_REFRESHED: {
     statusCode: 200,
     message: "Token actualizado correctamente",
-    code: "TOKEN_REFRESHED"
+    code: "TOKEN_REFRESHED",
   },
   BOOKS_SEARCH_SUCCESS: {
     statusCode: 200,
     message: "Libros encontrados correctamente",
-    code: "BOOKS_SEARCH_SUCCESS"
+    code: "BOOKS_SEARCH_SUCCESS",
   },
-  BOOK_SAVED:{
+  BOOK_SAVED: {
     statusCode: 201,
-    message:"Libro guardado correctamente",
-    code:"BOOK_SAVED"
+    message: "Libro guardado correctamente",
+    code: "BOOK_SAVED",
   },
   USERLISTS_FOUND: {
     statusCode: 200,
     message: "Listas encontradas correctamente",
-    code: "USERLISTS_FOUND"
+    code: "USERLISTS_FOUND",
   },
   USERBOOKS_FOUND: {
     statusCode: 200,
     message: "Libros encontrados correctamente",
-    code: "USERBOOKS_FOUND"
+    code: "USERBOOKS_FOUND",
   },
-  BOOK_DELETED:{
+  BOOK_DELETED: {
     statusCode: 200,
     message: "Libro eliminado correctamente",
-    code: "BOOK_DELETED"
+    code: "BOOK_DELETED",
   },
   BOOK_STATUS_UPDATED: {
     statusCode: 200,
     message: "Estado del libro actualizado correctamente",
-    code: "BOOK_STATUS_UPDATED"
-  }
+    code: "BOOK_STATUS_UPDATED",
+  },
 } as const;

@@ -58,3 +58,10 @@ export type UserBookIdParam = z.infer<typeof UserBookIdParamSchema>;
 export const DeleteUserBookParamsSchema = z.object({
   bookId: positiveNumber,
 });
+
+
+export const GetUserBooksQuerySchema = z.object({
+  status: z.enum(UserBookStatus).optional(),
+});
+
+export type GetUserBooksQuery = z.infer<typeof GetUserBooksQuerySchema>;

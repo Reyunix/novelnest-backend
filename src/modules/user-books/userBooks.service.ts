@@ -1,6 +1,7 @@
 import { AppError } from "@/utils/http/errorResponses";
 import {
   DeleteUserBookParamsSchema,
+  GetUserBooksQuerySchema,
   SaveUserBookSchema,
   saveUserBookType,
   UpdateBodyUserBookStatusSchema,
@@ -72,3 +73,10 @@ export const UpdateAndSyncUserBookStatus = ({
     return updatedBook
   });
 };
+
+
+export const validateGetUserBooksQuery = (rawData: unknown) => {
+  const parsed = GetUserBooksQuerySchema.safeParse(rawData);
+  if (!parsed.success) throw new AppError("INVALID_GET_USERBOOKS_PARAMS");
+  return parsed.data.status;
+}

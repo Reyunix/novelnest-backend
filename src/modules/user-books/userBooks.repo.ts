@@ -5,8 +5,10 @@ import { db } from "@/database/db";
 import type { UserBookStatus } from "./userBooks.schema";
 type PrismaDbOrTx = Pick<PrismaClient, "userBook">;
 
-export const getUserBooks = async (userId: number) => {
-  return await db.userBook.findMany({ where: { userId } });
+export const getUserBooks = async (userId: number, status?: UserBookStatus) => {
+  return await db.userBook.findMany({
+    where: { userId, ...(status ? { status } : {}) },
+  });
 };
 
 export const saveUserBook = async (

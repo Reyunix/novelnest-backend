@@ -2,7 +2,7 @@ import Fastify from "fastify";
 import { authRoutes } from "./modules/auth/auth.routes";
 import { bookRoutes } from "./modules/books/books.routes";
 import { userBooksRoutes } from "./modules/user-books/userBooks.routes";
-import { rootRoutes } from "./routes/root";
+import { rootRoutes } from "./modules/root/root";
 import dotenv from "dotenv";
 import fastifyCookie from "@fastify/cookie";
 import { authPlugin } from "./plugins/auth";
