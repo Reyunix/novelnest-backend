@@ -14,6 +14,8 @@ import { userListsRoutes } from "./modules/user-lists/userLists.routes";
 dotenv.config();
 
 const app = Fastify();
+const port = Number(process.env.PORT ?? 3000);
+const host = process.env.HOST ?? "0.0.0.0";
 
 //Plugins
 app.register(errorHandlerPlugin)
@@ -30,7 +32,7 @@ app.register(userBooksRoutes, { prefix: "/api/v1/users/me/books" });
 app.register(userListsRoutes, { prefix: "/api/v1/users/me/lists"})
 
 
-app.listen({ port: 3000 }, (err, address) => {
+app.listen({ port, host }, (err, address) => {
   if (err) {
     console.error(err);
     process.exit(1);
