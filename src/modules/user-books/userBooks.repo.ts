@@ -8,6 +8,7 @@ type PrismaDbOrTx = Pick<PrismaClient, "userBook">;
 export const getUserBooks = async (userId: number, status?: UserBookStatus) => {
   return await db.userBook.findMany({
     where: { userId, ...(status ? { status } : {}) },
+    orderBy: { createdAt: "desc" },
   });
 };
 

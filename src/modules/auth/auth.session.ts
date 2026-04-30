@@ -6,7 +6,7 @@ import { TOKEN_CONSTANTS } from "./auth.constants";
 const getCookieBaseOptions = () => ({
   httpOnly: true as const,
   secure: process.env.NODE_ENV === "production",
-  sameSite: "lax" as const,
+  sameSite: "none" as const,
   path: "/",
 });
 
