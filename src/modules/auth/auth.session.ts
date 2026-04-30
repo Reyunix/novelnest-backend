@@ -1,12 +1,15 @@
 import type { FastifyInstance, FastifyReply } from "fastify";
 import type { AuthSafeUser, AuthTokens, JwtUserPayload } from "./auth.types";
 import { TOKEN_CONSTANTS } from "./auth.constants";
+import { type CookieSerializeOptions } from "@fastify/cookie";
 
+const sameSiteOption: CookieSerializeOptions["sameSite"] =
+  process.env.NODE_ENV === "production" ? "none" : "lax";
 
 const getCookieBaseOptions = () => ({
   httpOnly: true as const,
   secure: process.env.NODE_ENV === "production",
-  sameSite: "none" as const,
+  sameSite: sameSiteOption,
   path: "/",
 });
 
@@ -21,11 +24,18 @@ export const signAuthTokens = (
   app: FastifyInstance,
   payload: JwtUserPayload,
 ): AuthTokens => ({
-  accessToken: app.jwt.sign(payload, { expiresIn: TOKEN_CONSTANTS.ACCESS_TOKEN_TTL_SECONDS }),
-  refreshToken: app.jwt.sign(payload, { expiresIn: TOKEN_CONSTANTS.REFRESH_TOKEN_TTL_SECONDS }),
+  accessToken: app.jwt.sign(payload, {
+    expiresIn: TOKEN_CONSTANTS.ACCESS_TOKEN_TTL_SECONDS,
+  }),
+  refreshToken: app.jwt.sign(payload, {
+    expiresIn: TOKEN_CONSTANTS.REFRESH_TOKEN_TTL_SECONDS,
+  }),
 });
 
-export const setAuthCookies = (reply: FastifyReply, tokens: AuthTokens): void => {
+export const setAuthCookies = (
+  reply: FastifyReply,
+  tokens: AuthTokens,
+): void => {
   const baseOptions = getCookieBaseOptions();
 
   reply.setCookie(TOKEN_CONSTANTS.ACCESS_TOKEN_NAME, tokens.accessToken, {

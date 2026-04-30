@@ -4,7 +4,6 @@ import fp from "fastify-plugin";
 
 const defaultAllowedOrigins = [
   "http://localhost:5173",
-  "http://127.0.0.1:5173",
 ];
 
 const allowedOrigins = (
