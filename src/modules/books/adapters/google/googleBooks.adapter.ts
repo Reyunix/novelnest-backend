@@ -68,6 +68,7 @@ export class GoogleBooksAdapter implements BooksAdapter {
     const response = await fetch(url);
 
     if (!response.ok) {
+      console.error(`Google Books API error: ${response.status} ${response.statusText}`);
       throw new AppError("EXTERNAL_API_ERROR");
     }
 
@@ -75,6 +76,7 @@ export class GoogleBooksAdapter implements BooksAdapter {
     const parsedData = GoogleBooksApiResponseSchema.safeParse(rawData);
 
     if (!parsedData.success) {
+      console.error("Failed to parse Google Books API response:", parsedData.error);
       throw new AppError("EXTERNAL_API_ERROR");
     }
 
@@ -82,6 +84,7 @@ export class GoogleBooksAdapter implements BooksAdapter {
     const parsedDto = BooksSearchResponseDtoSchema.safeParse(dto);
 
     if (!parsedDto.success) {
+      console.error("Failed to validate BooksSearchResponseDto:", parsedDto.error);
       throw new AppError("INTERNAL_SERVER_ERROR");
     }
 
@@ -119,7 +122,6 @@ export class GoogleBooksAdapter implements BooksAdapter {
     if (API_KEY_GOOGLE) {
       url.searchParams.set("key", API_KEY_GOOGLE);
     }
-    console.log("Constructed Google Books API URL:", url.toString());
     return url.toString();
   }
 }

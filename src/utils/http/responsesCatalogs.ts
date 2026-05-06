@@ -67,7 +67,7 @@ export const ErrorsCatalog = {
   USERBOOK_ALREADY_SAVED: {
     statusCode: 409,
     errorCode: "USERBOOK_ALREADY_SAVED",
-    message: "El usuario ya tiene este libro guardado",
+    message: "Ya tienes este libro en tu colección",
   },
 
   DEFAULT_STATUS_LIST_NOT_FOUND: {
