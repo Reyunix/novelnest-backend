@@ -189,3 +189,11 @@ For a Render Web Service with the backend repository as root:
 - Environment: `NODE_ENV=production`, `DATABASE_URL`, `JWT_SECRET`, `API_KEY_GOOGLE`, and `CORS_ORIGINS` with the exact HTTPS origin of the frontend. Render supplies `PORT`; the server binds to `0.0.0.0` by default.
 
 Bun is available on Render when the repository contains `bun.lock`; see [Render's Bun configuration](https://render.com/docs/bun-version). For services with a separate pre-deploy migration command, use `bun run prisma:migrate:deploy` there and `bun run start` as the start command.
+
+### Troubleshooting Prisma P1001 on Render
+
+If `prisma generate` succeeds but `prisma migrate deploy` reports P1001, the deployment cannot reach the database host. Check the database's availability, verify that `DATABASE_URL` matches the current connection string in the Render dashboard, and confirm that the web service and database share the same account and region when using the internal URL. A stale URL, unavailable database or mismatched region must be resolved independently of the build scripts.
+
+Keep the build command as `bun install --frozen-lockfile && bun run build`: generating Prisma alone does not generate `dist/index.js`. Use `bun run start:render` to apply migrations before starting, or the separate pre-deploy migration command on plans that support it. Moving migrations out of the build does not itself fix database connectivity.
+
+For connection details, see [Render Postgres connections](https://render.com/docs/postgresql-creating-connecting). Never copy database credentials into frontend environment variables or public diagnostics.

@@ -1,4 +1,9 @@
 export const ErrorsCatalog = {
+  ROUTE_NOT_FOUND: {
+    statusCode: 404,
+    errorCode: "ROUTE_NOT_FOUND",
+    message: "Recurso no disponible",
+  },
   BOOK_NOT_FOUND: {
     statusCode: 404,
     errorCode: "BOOK_NOT_FOUND",

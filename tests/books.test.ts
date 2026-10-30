@@ -115,3 +115,26 @@ describe("book details and review contracts", () => {
     });
   });
 });
+
+test("unknown backend routes return a generic envelope without echoing the URL", async () => {
+  const { default: Fastify } = await import("fastify");
+  const { errorHandlerPlugin } = await import("../src/plugins/errorHandler");
+  const app = Fastify();
+  app.register(errorHandlerPlugin);
+  try {
+    const response = await app.inject({
+      method: "GET",
+      url: "/private/route?token=do-not-echo",
+    });
+    expect(response.statusCode).toBe(404);
+    expect(response.json()).toEqual({
+      success: false,
+      errorCode: "ROUTE_NOT_FOUND",
+      message: "Recurso no disponible",
+    });
+    expect(response.body).not.toContain("/private");
+    expect(response.body).not.toContain("do-not-echo");
+  } finally {
+    await app.close();
+  }
+});
