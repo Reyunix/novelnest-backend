@@ -24,3 +24,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local development notes and agent workspace files
+/docs-internal/
+.codex
+.agents
+AGENTS.md
+AGENTS.override.md

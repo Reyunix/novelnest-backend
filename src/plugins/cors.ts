@@ -2,20 +2,18 @@ import type { FastifyPluginAsync } from "fastify";
 import cors from "@fastify/cors";
 import fp from "fastify-plugin";
 
-const defaultAllowedOrigins = [
-  "http://localhost:5173",
-];
+const defaultAllowedOrigins = ["http://localhost:5173"];
 
-const allowedOrigins = (
-  process.env.CORS_ORIGINS?.split(",").map((origin) => origin.trim()).filter(Boolean) ??
-  defaultAllowedOrigins
-);
+const allowedOrigins =
+  process.env.CORS_ORIGINS?.split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean) ?? defaultAllowedOrigins;
 
 // Cors plugin function settings
 export const corsPluginImpl: FastifyPluginAsync = async (app) => {
   app.register(cors, {
     origin: allowedOrigins,
-    methods: ["POST", "GET", "PATCH", "DELETE"],
+    methods: ["POST", "GET", "PUT", "PATCH", "DELETE"],
     credentials: true,
   });
 };

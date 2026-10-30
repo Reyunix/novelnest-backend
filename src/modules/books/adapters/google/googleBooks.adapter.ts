@@ -1,5 +1,7 @@
 import { AppError } from "@/utils/http/errorResponses";
 import {
+  BookDetailDtoSchema,
+  BookDetailDto,
   BooksSearchItemDto,
   BooksSearchResponseDto,
   BooksSearchResponseDtoSchema,
@@ -9,14 +11,18 @@ import {
   GoogleBooksApiResponse,
   GoogleBooksApiResponseSchema,
   GoogleBooksVolumeItem,
+  GoogleBooksVolumeItemSchema,
 } from "./googleBooks.api.schema";
 import { BooksAdapter } from "../books.adapter";
+
+import { descriptionToText, safeBookUrl } from "./description";
 
 const API_KEY_GOOGLE = process.env.API_KEY_GOOGLE;
 const API_BASE_URL_GOOGLE = process.env.API_BASE_URL_GOOGLE;
 const API_VOLUME_FIELDS_GOOGLE = process.env.API_VOLUME_FIELDS_GOOGLE;
 
-const normalizeTerm = (term: string): string => term.trim().replace(/\s+/g, " ");
+const normalizeTerm = (term: string): string =>
+  term.trim().replace(/\s+/g, " ");
 
 const buildGoogleQuery = (query: SearchBookQuery): string => {
   const terms: string[] = [];
@@ -30,7 +36,9 @@ const buildGoogleQuery = (query: SearchBookQuery): string => {
   return terms.join(" ");
 };
 
-const mapGoogleItemToDto = (item: GoogleBooksVolumeItem): BooksSearchItemDto => {
+const mapGoogleItemToDto = (
+  item: GoogleBooksVolumeItem,
+): BooksSearchItemDto => {
   const info = item.volumeInfo;
 
   return {
@@ -42,7 +50,8 @@ const mapGoogleItemToDto = (item: GoogleBooksVolumeItem): BooksSearchItemDto => 
     pageCount: info?.pageCount ?? null,
     categories: info?.categories ?? [],
     maturityRating: info?.maturityRating ?? null,
-    thumbnail: info?.imageLinks?.thumbnail ?? info?.imageLinks?.smallThumbnail ?? null,
+    thumbnail:
+      info?.imageLinks?.thumbnail ?? info?.imageLinks?.smallThumbnail ?? null,
     canonicalVolumeLink: info?.canonicalVolumeLink ?? null,
     description: info?.description ?? null,
     language: info?.language ?? null,
@@ -63,12 +72,71 @@ const mapGoogleResponseToDto = (
 };
 
 export class GoogleBooksAdapter implements BooksAdapter {
+  public async getById(providerBookId: string): Promise<BookDetailDto> {
+    const base =
+      API_BASE_URL_GOOGLE ?? "https://www.googleapis.com/books/v1/volumes";
+    const url = new URL(base);
+    url.pathname = `${url.pathname.replace(/\/+$/, "")}/${encodeURIComponent(providerBookId)}`;
+    url.search = "";
+    url.hash = "";
+    if (API_KEY_GOOGLE) url.searchParams.set("key", API_KEY_GOOGLE);
+    let response: Response;
+    try {
+      response = await fetch(url, { signal: AbortSignal.timeout(10000) });
+    } catch {
+      throw new AppError("EXTERNAL_API_ERROR");
+    }
+    if (response.status === 404) throw new AppError("BOOK_NOT_FOUND");
+    if (!response.ok) throw new AppError("EXTERNAL_API_ERROR");
+    const parsed = GoogleBooksVolumeItemSchema.safeParse(
+      await response.json().catch(() => null),
+    );
+    if (!parsed.success || parsed.data.id !== providerBookId)
+      throw new AppError("EXTERNAL_API_ERROR");
+    const item = parsed.data;
+    const info = item.volumeInfo;
+    return BookDetailDtoSchema.parse({
+      ...mapGoogleItemToDto(item),
+      title: info?.title?.trim() || "Sin título",
+      authors: (info?.authors ?? [])
+        .map((author) => author.trim())
+        .filter(Boolean),
+      publisher: info?.publisher?.trim() || null,
+      publishedDate: info?.publishedDate?.trim() || null,
+      categories: (info?.categories ?? [])
+        .map((category) => category.trim())
+        .filter(Boolean),
+      maturityRating: info?.maturityRating?.trim() || null,
+      language: info?.language?.trim() || null,
+      provider: "google",
+      subtitle: info?.subtitle || null,
+      thumbnail: safeBookUrl(
+        info?.imageLinks?.large ??
+          info?.imageLinks?.medium ??
+          info?.imageLinks?.thumbnail ??
+          info?.imageLinks?.smallThumbnail,
+      ),
+      canonicalVolumeLink: safeBookUrl(info?.canonicalVolumeLink),
+      description: descriptionToText(info?.description),
+      previewLink: safeBookUrl(info?.previewLink),
+      industryIdentifiers: (info?.industryIdentifiers ?? []).filter(
+        (entry) => entry.type && entry.identifier,
+      ),
+      externalRating:
+        info?.averageRating != null
+          ? { average: info.averageRating, count: info.ratingsCount ?? null }
+          : null,
+    });
+  }
+
   public async search(query: SearchBookQuery): Promise<BooksSearchResponseDto> {
     const url = this.buildSearchUrl(query);
     const response = await fetch(url);
 
     if (!response.ok) {
-      console.error(`Google Books API error: ${response.status} ${response.statusText}`);
+      console.error(
+        `Google Books API error: ${response.status} ${response.statusText}`,
+      );
       throw new AppError("EXTERNAL_API_ERROR");
     }
 
@@ -76,7 +144,10 @@ export class GoogleBooksAdapter implements BooksAdapter {
     const parsedData = GoogleBooksApiResponseSchema.safeParse(rawData);
 
     if (!parsedData.success) {
-      console.error("Failed to parse Google Books API response:", parsedData.error);
+      console.error(
+        "Failed to parse Google Books API response:",
+        parsedData.error,
+      );
       throw new AppError("EXTERNAL_API_ERROR");
     }
 
@@ -84,7 +155,10 @@ export class GoogleBooksAdapter implements BooksAdapter {
     const parsedDto = BooksSearchResponseDtoSchema.safeParse(dto);
 
     if (!parsedDto.success) {
-      console.error("Failed to validate BooksSearchResponseDto:", parsedDto.error);
+      console.error(
+        "Failed to validate BooksSearchResponseDto:",
+        parsedDto.error,
+      );
       throw new AppError("INTERNAL_SERVER_ERROR");
     }
 

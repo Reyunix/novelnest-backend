@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const BooksSearchItemDtoSchema = z.object({
-  providerBookId: z.string(), 
+  providerBookId: z.string(),
   title: z.string(),
   authors: z.array(z.string()),
   publisher: z.string().nullable(),
@@ -15,6 +15,22 @@ export const BooksSearchItemDtoSchema = z.object({
   language: z.string().nullable(),
 });
 
+export const BookDetailDtoSchema = BooksSearchItemDtoSchema.extend({
+  provider: z.string(),
+  subtitle: z.string().nullable(),
+  industryIdentifiers: z.array(
+    z.object({ type: z.string(), identifier: z.string() }),
+  ),
+  previewLink: z.string().nullable(),
+  externalRating: z
+    .object({
+      average: z.number().min(0).max(5),
+      count: z.number().int().nonnegative().nullable(),
+    })
+    .nullable(),
+});
+export type BookDetailDto = z.infer<typeof BookDetailDtoSchema>;
+
 export const BooksSearchResponseDtoSchema = z.object({
   provider: z.string(),
   totalItems: z.number().int().min(0),
@@ -24,4 +40,6 @@ export const BooksSearchResponseDtoSchema = z.object({
 });
 
 export type BooksSearchItemDto = z.infer<typeof BooksSearchItemDtoSchema>;
-export type BooksSearchResponseDto = z.infer<typeof BooksSearchResponseDtoSchema>;
+export type BooksSearchResponseDto = z.infer<
+  typeof BooksSearchResponseDtoSchema
+>;

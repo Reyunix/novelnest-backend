@@ -1,4 +1,20 @@
 export const ErrorsCatalog = {
+  BOOK_NOT_FOUND: {
+    statusCode: 404,
+    errorCode: "BOOK_NOT_FOUND",
+    message: "Libro no encontrado",
+  },
+  INVALID_BOOK_PARAMS: {
+    statusCode: 400,
+    errorCode: "INVALID_BOOK_PARAMS",
+    message: "Identificador de libro o proveedor inválido",
+  },
+  INVALID_REVIEW: {
+    statusCode: 400,
+    errorCode: "INVALID_REVIEW",
+    message:
+      "Introduce una puntuación de 1 a 5 o una reseña de hasta 5.000 caracteres",
+  },
   USER_NOT_FOUND: {
     statusCode: 404,
     errorCode: "USER_NOT_FOUND",
@@ -109,6 +125,31 @@ export const ErrorsCatalog = {
 } as const;
 
 export const SuccessCatalog = {
+  BOOK_DETAIL: {
+    statusCode: 200,
+    code: "BOOK_DETAIL",
+    message: "Ficha del libro",
+  },
+  BOOK_COMMUNITY: {
+    statusCode: 200,
+    code: "BOOK_COMMUNITY",
+    message: "Comunidad del libro",
+  },
+  BOOK_REVIEW: {
+    statusCode: 200,
+    code: "BOOK_REVIEW",
+    message: "Aportación propia",
+  },
+  BOOK_REVIEW_SAVED: {
+    statusCode: 200,
+    code: "BOOK_REVIEW_SAVED",
+    message: "Aportación publicada",
+  },
+  BOOK_REVIEW_DELETED: {
+    statusCode: 200,
+    code: "BOOK_REVIEW_DELETED",
+    message: "Aportación retirada",
+  },
   USER_CREATED: {
     statusCode: 201,
     message: "Usuario creado correctamente",

@@ -4,9 +4,12 @@ import { GoogleBooksAdapter } from "./google/googleBooks.adapter";
 
 const googleBooksAdapter = new GoogleBooksAdapter();
 
-export const getBooksAdapter = (): BooksAdapter => {
+export const getBooksAdapter = (explicitProvider?: string): BooksAdapter => {
   // Keep provider selection centralized for future migrations.
-  const provider = process.env.API_BOOKS_PROVIDER?.toLowerCase() ?? "google";
+  const provider =
+    explicitProvider ??
+    process.env.API_BOOKS_PROVIDER?.toLowerCase() ??
+    "google";
 
   switch (provider) {
     case "google":

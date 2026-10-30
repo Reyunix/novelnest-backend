@@ -22,6 +22,9 @@ Backend service for NovelNest (Goodreads-style app) built with Fastify + TypeScr
 - Access token refresh (`POST /api/v1/auth/refresh`)
 - Session check (`GET /api/v1/auth/me`)
 - Book search via provider adapter (`GET /api/v1/books/search`)
+- Public edition detail (`GET /api/v1/books/:provider/:providerBookId`)
+- Community rating aggregates and paginated reviews (`GET /api/v1/books/:provider/:providerBookId/community`)
+- Authenticated own review: `GET`, `PUT`, `DELETE /api/v1/books/:provider/:providerBookId/reviews/me`
 
 ## Main Structure
 
@@ -148,3 +151,41 @@ bun run dev
 
 - This backend is intended to be consumed by `novelnest-frontend`.
 - Provider API keys stay in backend only (not in frontend env).
+
+## Book detail and community
+
+Run `bun run prisma:migrate:deploy` and `bun run prisma:generate` before starting the updated API. The `BookReview` migration adds public contributions without copying private `UserBook.rating` or `UserBook.review` values.
+
+Each user can publish one contribution per provider and edition: an integer rating from 1 to 5, review text up to 5,000 characters, or both. PUT replaces the contribution; omitted fields are cleared. Public responses include the display name, content and timestamps, never the user's email or library. Deleting a library entry preserves the contribution; deleting the account cascades to its contributions.
+
+Community queries accept `page` (default 1) and `limit` (default 10, maximum 40). Responses contain `average`, `ratingsCount`, `totalItems` (text reviews), `page`, `limit`, `totalPages` and `items`. Rating-only contributions count towards the average without appearing as empty reviews. Pages beyond the end are clamped to the final available page. The detail endpoint normalizes provider metadata and converts HTML descriptions to plain text.
+
+Google Books is queried when creating a contribution, but existing contributions can be edited or removed during provider outages. Bibliography and community reads are independent.
+
+## Checks
+
+```sh
+bun run typecheck
+bun run test
+bun run test:integration
+```
+
+The integration suite requires the migrated local PostgreSQL database. It creates isolated test accounts and removes those accounts and their dependent data in a `finally` block. Without `RUN_DB_TESTS=1`, the default test command skips database integration tests.
+
+## Production build (Render)
+
+```sh
+bun install --frozen-lockfile
+bun run build
+```
+
+The build generates `dist/index.js` for Node and resolves internal TypeScript aliases. Runtime packages, including the Prisma client and its native engine, remain external: `dist` is not a standalone executable. Install dependencies and generate Prisma in the destination environment rather than copying local `node_modules`.
+
+For a Render Web Service with the backend repository as root:
+
+- Build command: `bun install --frozen-lockfile && bun run build`.
+- Start command: `bun run start:render` (applies migrations before starting Node).
+- Health check: `/api/v1/healthz`.
+- Environment: `NODE_ENV=production`, `DATABASE_URL`, `JWT_SECRET`, `API_KEY_GOOGLE`, and `CORS_ORIGINS` with the exact HTTPS origin of the frontend. Render supplies `PORT`; the server binds to `0.0.0.0` by default.
+
+Bun is available on Render when the repository contains `bun.lock`; see [Render's Bun configuration](https://render.com/docs/bun-version). For services with a separate pre-deploy migration command, use `bun run prisma:migrate:deploy` there and `bun run start` as the start command.

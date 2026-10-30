@@ -1,4 +1,3 @@
-import { BookStatus } from "@prisma/client";
 import { getUserDefaultLists as getDefaultUserLists } from "../user-lists/userLists.repo";
 import { createUserListBook, deleteUserListBook } from "./userListBook.repo";
 import { PrismaClient } from "@prisma/client";

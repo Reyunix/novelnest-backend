@@ -3,6 +3,8 @@ import { z } from "zod";
 const GoogleBooksImageLinksSchema = z.object({
   smallThumbnail: z.string().optional(),
   thumbnail: z.string().optional(),
+  medium: z.string().optional(),
+  large: z.string().optional(),
 });
 
 const GoogleBooksIndustryIdentifierSchema = z.object({
@@ -12,6 +14,10 @@ const GoogleBooksIndustryIdentifierSchema = z.object({
 
 const GoogleBooksVolumeInfoSchema = z.object({
   title: z.string().optional(),
+  subtitle: z.string().optional(),
+  averageRating: z.number().min(0).max(5).optional(),
+  ratingsCount: z.number().int().nonnegative().optional(),
+  previewLink: z.string().optional(),
   authors: z.array(z.string()).optional(),
   publisher: z.string().optional(),
   publishedDate: z.string().optional(),
@@ -25,7 +31,7 @@ const GoogleBooksVolumeInfoSchema = z.object({
   industryIdentifiers: z.array(GoogleBooksIndustryIdentifierSchema).optional(),
 });
 
-const GoogleBooksVolumeItemSchema = z.object({
+export const GoogleBooksVolumeItemSchema = z.object({
   id: z.string(),
   volumeInfo: GoogleBooksVolumeInfoSchema.optional(),
 });
@@ -37,4 +43,6 @@ export const GoogleBooksApiResponseSchema = z.object({
 });
 
 export type GoogleBooksVolumeItem = z.infer<typeof GoogleBooksVolumeItemSchema>;
-export type GoogleBooksApiResponse = z.infer<typeof GoogleBooksApiResponseSchema>;
+export type GoogleBooksApiResponse = z.infer<
+  typeof GoogleBooksApiResponseSchema
+>;
