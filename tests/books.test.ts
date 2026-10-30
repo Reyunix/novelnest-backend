@@ -1,3 +1,4 @@
+import { createProviderGateway } from "../src/modules/books/adapters/providerGateway";
 import { afterEach, describe, expect, test } from "bun:test";
 import { GoogleBooksAdapter } from "../src/modules/books/adapters/google/googleBooks.adapter";
 import {
@@ -79,7 +80,9 @@ describe("book details and review contracts", () => {
         },
       });
     });
-    const book = await new GoogleBooksAdapter().getById("test_ID");
+    const book = await new GoogleBooksAdapter(
+      createProviderGateway({ reserve: async () => {} }),
+    ).getById("test_ID");
     expect(requested?.pathname.endsWith("/test_ID")).toBe(true);
     expect(requested?.searchParams.has("fields")).toBe(false);
     expect(book).toMatchObject({
@@ -93,7 +96,9 @@ describe("book details and review contracts", () => {
     });
   });
   test("detail adapter distinguishes missing volumes, provider downtime and malformed payloads", async () => {
-    const adapter = new GoogleBooksAdapter();
+    const adapter = new GoogleBooksAdapter(
+      createProviderGateway({ reserve: async () => {} }),
+    );
     replaceFetch(async () => new Response(null, { status: 404 }));
     await expect(adapter.getById("missing")).rejects.toMatchObject({
       errorCode: "BOOK_NOT_FOUND",
@@ -137,4 +142,30 @@ test("unknown backend routes return a generic envelope without echoing the URL",
   } finally {
     await app.close();
   }
+});
+
+test("search bounds are enforced server-side and normalized cache keys keep paging distinct", async () => {
+  const { searchBookQuerySchema } =
+    await import("../src/modules/books/books.schema");
+  for (const query of [
+    { all: "a".repeat(121) },
+    { all: "book", page: 51 },
+    { all: "book", limit: 41 },
+  ])
+    expect(searchBookQuerySchema.safeParse(query).success).toBe(false);
+  let calls = 0;
+  replaceFetch(async () => {
+    calls++;
+    return Response.json({ totalItems: 0, items: [] });
+  });
+  const adapter = new GoogleBooksAdapter(
+    createProviderGateway({ reserve: async () => {} }),
+  );
+  await adapter.search(searchBookQuerySchema.parse({ all: " The   book " }));
+  await adapter.search(searchBookQuerySchema.parse({ all: "The book" }));
+  expect(calls).toBe(1);
+  await adapter.search(
+    searchBookQuerySchema.parse({ all: "The book", page: 2 }),
+  );
+  expect(calls).toBe(2);
 });

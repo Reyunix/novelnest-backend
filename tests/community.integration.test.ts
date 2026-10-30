@@ -170,7 +170,7 @@ describe.skipIf(process.env.RUN_DB_TESTS !== "1")(
           totalPages: 1,
           totalItems: 1,
         });
-        expect((await call("GET", "")).statusCode).toBe(502);
+        expect((await call("GET", "")).statusCode).toBe(200); // cached bibliographic detail remains available
         expect((await call("GET", "/community")).statusCode).toBe(200);
         await db.user.delete({ where: { id: a } });
         expect((await call("GET", "/community")).json().data).toMatchObject({

@@ -197,3 +197,19 @@ If `prisma generate` succeeds but `prisma migrate deploy` reports P1001, the dep
 Keep the build command as `bun install --frozen-lockfile && bun run build`: generating Prisma alone does not generate `dist/index.js`. Use `bun run start:render` to apply migrations before starting, or the separate pre-deploy migration command on plans that support it. Moving migrations out of the build does not itself fix database connectivity.
 
 For connection details, see [Render Postgres connections](https://render.com/docs/postgresql-creating-connecting). Never copy database credentials into frontend environment variables or public diagnostics.
+
+## Portfolio API protection
+
+Fastify 5.12.1 and `@fastify/rate-limit` protect the API before expensive handlers. See `.env.example` for every configurable limit. Defaults: API 120/min/IP; search 20/min/IP; detail 40/min/IP; login 5/min/IP; registration 3/hour/IP; authenticated writes 30/min/user; review mutations 10/min/user. Specific buckets are additive to the general limit. Health and OPTIONS preflight requests are excluded. Responses use HTTP 429 and `Retry-After`; the frontend never retries these automatically.
+
+The gateway for Google Books caches normalized results (200-entry LRU, search 5 minutes, details 6 hours), shares identical concurrent requests, bounds provider concurrency to two and applies a 10-second deadline. There are no automatic provider retries. `ProviderUsage` reserves a call atomically in PostgreSQL before contacting Google. The default cap is 500 per provider per UTC day, shared by all users and application instances; failed attempts also count. A database error blocks fresh provider calls. Cached results remain available, and the frontend demo examples do not need the API.
+
+Apply `20261030160000_provider_budget` with the normal Prisma deployment migration command before running the new version. Normal build/start commands remain unchanged. The start command applies pending migrations.
+
+Set `CORS_ORIGINS` to the exact frontend origins, without trailing slashes. State-changing requests carrying session cookies must include a matching Origin; CORS itself is not authentication. Request bodies are limited to 32 KiB; search terms to 120 characters and pages to 50. API keys stay server-side.
+
+### Render proxy configuration
+
+`TRUSTED_PROXY_CIDRS` accepts only the explicitly trusted proxy IP addresses/CIDRs for the deployment. Do not guess a hop count or enable unrestricted proxy trust. Leave it empty until the connecting peers and forwarding behavior have been verified in Render. With the default, Fastify ignores forwarded headers and applies IP limits to the socket peer, which can mean several visitors share a bucket behind Render. The durable daily provider cap still applies. Verify distinct clients and spoofed headers in the deployed environment before claiming visitor-specific limits are configured.
+
+Rate-limit stores and provider caches are process-local and reset on restart; the PostgreSQL daily budget does not. This setup targets one Render instance and requires no Redis. Scaling across instances requires a shared rate-limit store if the same per-client limits are needed across them. Counter metrics are emitted once per minute (`provider_usage`); rejections are logged without URLs, request bodies, credentials or complete search terms. Default request logging is disabled.

@@ -14,12 +14,14 @@ declare module "fastify" {
 
 // Auth plugin function settings
 const authPluginImpl: FastifyPluginAsync = async (app) => {
-  app.decorate("authenticate", async (request) => {
+  app.decorate("authenticate", async (request, reply) => {
     try {
       await request.jwtVerify();
     } catch {
       throw new AppError("UNAUTHORIZED");
     }
+    if (app.hasDecorator("enforceUserLimits"))
+      await app.enforceUserLimits(request, reply);
   });
 };
 

@@ -102,3 +102,10 @@ model BookReview {
   @@unique([userId, provider, providerBookId])
   @@index([provider, providerBookId, createdAt, id])
 }
+
+model ProviderUsage {
+  provider String
+  day DateTime @db.Date
+  count Int
+  @@id([provider, day])
+}

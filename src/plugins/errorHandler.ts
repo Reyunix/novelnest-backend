@@ -12,7 +12,9 @@ const errorHandlerPluginImpl: FastifyPluginAsync = async (app) => {
       return sendError(reply, error);
     }
 
-    request.log.error(error);
+    if ((error as { statusCode?: number }).statusCode === 413)
+      return sendError(reply, new AppError("PAYLOAD_TOO_LARGE"));
+    request.log.error({ event: "request_failed" });
     return sendError(reply, new AppError("INTERNAL_SERVER_ERROR"));
   });
 };

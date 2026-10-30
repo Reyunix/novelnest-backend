@@ -11,26 +11,34 @@ import { jwtPlugin } from "./plugins/jwt";
 import { errorHandlerPlugin } from "./plugins/errorHandler";
 import { userListsRoutes } from "./modules/user-lists/userLists.routes";
 
+import { securityPlugin } from "./plugins/security";
+import { trustedProxies } from "./shared/config/limits";
+
 dotenv.config();
 
-const app = Fastify();
+const app = Fastify({
+  logger: true,
+  disableRequestLogging: true,
+  bodyLimit: 32 * 1024,
+  trustProxy: trustedProxies(),
+});
 const port = Number(process.env.PORT ?? 3000);
 const host = process.env.HOST ?? "0.0.0.0";
 
 //Plugins
-app.register(errorHandlerPlugin)
+app.register(errorHandlerPlugin);
 app.register(fastifyCookie);
 app.register(jwtPlugin);
-app.register(authPlugin);
 app.register(corsPlugin);
+app.register(securityPlugin);
+app.register(authPlugin);
 
 //Routes
 app.register(rootRoutes, { prefix: "/api/v1" });
 app.register(bookRoutes, { prefix: "/api/v1/books" });
 app.register(authRoutes, { prefix: "/api/v1/auth" });
 app.register(userBooksRoutes, { prefix: "/api/v1/users/me/books" });
-app.register(userListsRoutes, { prefix: "/api/v1/users/me/lists"})
-
+app.register(userListsRoutes, { prefix: "/api/v1/users/me/lists" });
 
 app.listen({ port, host }, (err, address) => {
   if (err) {

@@ -12,6 +12,7 @@ export type ErrorResponse = {
 export class AppError extends Error {
   public errorCode: string;
   public statusCode: number;
+  public retryAfter?: number;
   public errorResponse: ErrorResponse;
 
   constructor(code: ErrorCode, customMessage?: string) {
@@ -37,5 +38,6 @@ export class AppError extends Error {
 }
 
 export const sendError = (reply: FastifyReply, error: AppError) => {
+  if (error.retryAfter) reply.header("Retry-After", error.retryAfter);
   return reply.status(error.statusCode).send(error.toResponse());
 };

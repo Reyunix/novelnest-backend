@@ -1,6 +1,6 @@
 import z from "zod";
 
-const nonEmptyString = z.string().trim().min(1);
+const nonEmptyString = z.string().trim().min(1).max(120);
 
 export const searchBookQuerySchema = z
   .object({
@@ -10,7 +10,7 @@ export const searchBookQuerySchema = z
     subject: nonEmptyString.optional(),
     isbn: nonEmptyString.optional(),
     sortBy: z.enum(["relevance", "newest"]).default("relevance"),
-    page: z.coerce.number().int().min(1).default(1),
+    page: z.coerce.number().int().min(1).max(50).default(1),
     limit: z.coerce.number().int().min(1).max(40).default(40),
     printType: z.enum(["all", "books", "magazines"]).default("books"),
     availability: z

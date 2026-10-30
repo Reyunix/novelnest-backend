@@ -1,4 +1,29 @@
 export const ErrorsCatalog = {
+  RATE_LIMITED: {
+    statusCode: 429,
+    errorCode: "RATE_LIMITED",
+    message: "Demasiadas solicitudes. Inténtalo más tarde.",
+  },
+  CATALOG_QUOTA_EXCEEDED: {
+    statusCode: 429,
+    errorCode: "CATALOG_QUOTA_EXCEEDED",
+    message: "El catálogo ha alcanzado su límite temporal.",
+  },
+  CATALOG_UNAVAILABLE: {
+    statusCode: 503,
+    errorCode: "CATALOG_UNAVAILABLE",
+    message: "Catálogo temporalmente no disponible.",
+  },
+  ORIGIN_NOT_ALLOWED: {
+    statusCode: 403,
+    errorCode: "ORIGIN_NOT_ALLOWED",
+    message: "Solicitud no permitida.",
+  },
+  PAYLOAD_TOO_LARGE: {
+    statusCode: 413,
+    errorCode: "PAYLOAD_TOO_LARGE",
+    message: "Los datos enviados superan el tamaño permitido.",
+  },
   ROUTE_NOT_FOUND: {
     statusCode: 404,
     errorCode: "ROUTE_NOT_FOUND",

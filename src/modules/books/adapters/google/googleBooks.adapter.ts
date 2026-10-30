@@ -1,3 +1,8 @@
+import {
+  providerGateway,
+  type createProviderGateway,
+} from "../providerGateway";
+import { integerEnv } from "@/shared/config/limits";
 import { AppError } from "@/utils/http/errorResponses";
 import {
   BookDetailDtoSchema,
@@ -72,7 +77,37 @@ const mapGoogleResponseToDto = (
 };
 
 export class GoogleBooksAdapter implements BooksAdapter {
-  public async getById(providerBookId: string): Promise<BookDetailDto> {
+  constructor(
+    private readonly gateway: ReturnType<
+      typeof createProviderGateway
+    > = providerGateway,
+  ) {}
+  public getById(providerBookId: string): Promise<BookDetailDto> {
+    return this.gateway.load(
+      `google:detail:${providerBookId}`,
+      integerEnv("PROVIDER_DETAIL_TTL_MS", 21600000),
+      (signal) => this.fetchById(providerBookId, signal),
+    );
+  }
+  public search(query: SearchBookQuery): Promise<BooksSearchResponseDto> {
+    const normalized = Object.fromEntries(
+      Object.entries(query)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([key, value]) => [
+          key,
+          typeof value === "string" ? normalizeTerm(value) : value,
+        ]),
+    ) as SearchBookQuery;
+    return this.gateway.load(
+      `google:search:${JSON.stringify(normalized)}`,
+      integerEnv("PROVIDER_SEARCH_TTL_MS", 300000),
+      (signal) => this.fetchSearch(normalized, signal),
+    );
+  }
+  private async fetchById(
+    providerBookId: string,
+    signal: AbortSignal,
+  ): Promise<BookDetailDto> {
     const base =
       API_BASE_URL_GOOGLE ?? "https://www.googleapis.com/books/v1/volumes";
     const url = new URL(base);
@@ -82,7 +117,7 @@ export class GoogleBooksAdapter implements BooksAdapter {
     if (API_KEY_GOOGLE) url.searchParams.set("key", API_KEY_GOOGLE);
     let response: Response;
     try {
-      response = await fetch(url, { signal: AbortSignal.timeout(10000) });
+      response = await fetch(url, { signal });
     } catch {
       throw new AppError("EXTERNAL_API_ERROR");
     }
@@ -129,9 +164,17 @@ export class GoogleBooksAdapter implements BooksAdapter {
     });
   }
 
-  public async search(query: SearchBookQuery): Promise<BooksSearchResponseDto> {
+  private async fetchSearch(
+    query: SearchBookQuery,
+    signal: AbortSignal,
+  ): Promise<BooksSearchResponseDto> {
     const url = this.buildSearchUrl(query);
-    const response = await fetch(url);
+    let response: Response;
+    try {
+      response = await fetch(url, { signal });
+    } catch {
+      throw new AppError("EXTERNAL_API_ERROR");
+    }
 
     if (!response.ok) {
       console.error(
@@ -140,7 +183,7 @@ export class GoogleBooksAdapter implements BooksAdapter {
       throw new AppError("EXTERNAL_API_ERROR");
     }
 
-    const rawData: unknown = await response.json();
+    const rawData: unknown = await response.json().catch(() => null);
     const parsedData = GoogleBooksApiResponseSchema.safeParse(rawData);
 
     if (!parsedData.success) {

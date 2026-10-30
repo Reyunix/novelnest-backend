@@ -73,14 +73,14 @@ export const saveReview = async (
   const own = await getOwnReview(identity, userId);
   if (!own)
     await getBooksAdapter(identity.provider).getById(identity.providerBookId);
-  return reviewDtoSchema.parse(
-    await db.bookReview.upsert({
-      where: { userId_provider_providerBookId: { userId, ...identity } },
-      create: { userId, ...identity, ...input.data },
-      update: input.data,
-      select: publicSelect,
-    }),
-  );
+  // A scalar-only selection allows Prisma's atomic native ON CONFLICT upsert.
+  await db.bookReview.upsert({
+    where: { userId_provider_providerBookId: { userId, ...identity } },
+    create: { userId, ...identity, ...input.data },
+    update: input.data,
+    select: { id: true },
+  });
+  return reviewDtoSchema.parse(await getOwnReview(identity, userId));
 };
 
 export const removeReview = async (identity: BookIdentity, userId: number) => {
